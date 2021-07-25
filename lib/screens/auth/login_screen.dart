@@ -12,9 +12,7 @@ class Login extends StatelessWidget {
 
   Future<FirebaseAuth> loginUser(String phone, BuildContext context) async {
     FirebaseAuth _auth = FirebaseAuth.instance;
-    // MyProgress _myProgress = MyProgress(context);
-
-    // _myProgress.show();
+    log("phone is : " + phone);
     _auth.verifyPhoneNumber(
         phoneNumber: "+91" + phone,
         timeout: Duration(seconds: 60),
