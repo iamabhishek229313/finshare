@@ -29,7 +29,8 @@ dependencies:
   transparent_image: null
   # progress_dialog: null
   chart_components: ^1.0.1
-
+  multiavatar: any
+  awesome_card: ^1.1.5
 
 dev_dependencies:
   flutter_test:
