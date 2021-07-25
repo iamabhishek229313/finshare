@@ -35,7 +35,10 @@ class _HomeState extends State<Home> {
       body: Container(
           color: Colors.blue,
           child: Center(
-            child: Text("Home"),
+            child: Text(
+              "Home",
+              style: TextStyle(fontSize: 32.0),
+            ),
           )),
     );
   }

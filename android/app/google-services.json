@@ -1,47 +1,55 @@
 {
-    "project_info": {
-      "project_number": "151367755282",
-      "project_id": "finshare-ba48a",
-      "storage_bucket": "finshare-ba48a.appspot.com"
-    },
-    "client": [
-      {
-        "client_info": {
-          "mobilesdk_app_id": "1:151367755282:android:61029a319a328bf46a9acb",
-          "android_client_info": {
-            "package_name": "com.example.finshare"
+  "project_info": {
+    "project_number": "151367755282",
+    "project_id": "finshare-ba48a",
+    "storage_bucket": "finshare-ba48a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151367755282:android:61029a319a328bf46a9acb",
+        "android_client_info": {
+          "package_name": "com.example.finshare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "151367755282-9g12aigskqlp83sfersi8dft7h1j7eaa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.finshare",
+            "certificate_hash": "aeb43df9f30f962834a1b6a6d6c89cef629ad37a"
           }
         },
-        "oauth_client": [
-          {
-            "client_id": "151367755282-eshd7jp8j6a3ia4581e8685m35ep2dib.apps.googleusercontent.com",
-            "client_type": 1,
-            "android_info": {
-              "package_name": "com.example.finshare",
-              "certificate_hash": "4a229355cb72f05bf7d6bcff54df1844eec00be2"
+        {
+          "client_id": "151367755282-eshd7jp8j6a3ia4581e8685m35ep2dib.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.finshare",
+            "certificate_hash": "4a229355cb72f05bf7d6bcff54df1844eec00be2"
+          }
+        },
+        {
+          "client_id": "151367755282-osuihrefpati2gvqe5bqic6tjak6fc5p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSuuXy2pek0chwYIsa93PNG-RFkVdt5d0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "151367755282-osuihrefpati2gvqe5bqic6tjak6fc5p.apps.googleusercontent.com",
+              "client_type": 3
             }
-          },
-          {
-            "client_id": "151367755282-osuihrefpati2gvqe5bqic6tjak6fc5p.apps.googleusercontent.com",
-            "client_type": 3
-          }
-        ],
-        "api_key": [
-          {
-            "current_key": "AIzaSyBSuuXy2pek0chwYIsa93PNG-RFkVdt5d0"
-          }
-        ],
-        "services": {
-          "appinvite_service": {
-            "other_platform_oauth_client": [
-              {
-                "client_id": "151367755282-osuihrefpati2gvqe5bqic6tjak6fc5p.apps.googleusercontent.com",
-                "client_type": 3
-              }
-            ]
-          }
+          ]
         }
       }
-    ],
-    "configuration_version": "1"
-  }
+    }
+  ],
+  "configuration_version": "1"
+}

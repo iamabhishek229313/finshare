@@ -24,10 +24,11 @@ dependencies:
   google_fonts: null
   google_sign_in: ^5.0.5
   http: null
-  progress_dialog: null
   share: null
   shared_preferences: null
   transparent_image: null
+  # progress_dialog: null
+
 
 dev_dependencies:
   flutter_test:
