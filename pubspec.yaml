@@ -28,6 +28,7 @@ dependencies:
   shared_preferences: null
   transparent_image: null
   # progress_dialog: null
+  chart_components: ^1.0.1
 
 
 dev_dependencies:
