@@ -47,77 +47,57 @@ class Login extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        body: Container(
-      width: screenWidth,
-      height: screenHeight,
-      color: Colors.red,
-      padding: EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "LOGIN",
-            style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, color: Colors.black),
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Container(
+            width: screenWidth,
+            height: screenHeight,
+            padding: EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "LOGIN",
+                  style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                TextField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.number,
+                  cursorColor: Colors.black,
+                  scrollPadding: EdgeInsets.zero,
+                  style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+                  decoration: InputDecoration(helperText: 'Phone number', prefixText: "+91"),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: FloatingActionButton(
+                    elevation: 0.0,
+                    onPressed: () {
+                      final phone = _phoneController.text.trim();
+                      loginUser(phone, context);
+                    },
+                    child: Icon(Icons.arrow_forward),
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => Registration()));
+                    },
+                    child: Text(
+                      "New user? Register now",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.black),
+                    )),
+              ],
+            ),
           ),
-          SizedBox(
-            height: 16,
-          ),
-          // SizedBox(
-          //   height: 50.0,
-          //   width: 400,
-          //   child: Row(
-          //     children: [
-          //       TextField(
-          //         controller: _phoneController,
-          //         keyboardType: TextInputType.number,
-          //         cursorColor: Theme.of(context).primaryColor,
-          //         decoration: InputDecoration(helperText: 'Phone number'),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          // Row(
-          //   children: <Widget>[
-          //     // Center(
-          //     //   child: Text(
-          //     //     "+91",
-          //     //     style: TextStyle(fontSize: 22.0),
-          //     //   ),
-          //     // ),
-          //     // SizedBox(
-          //     // width: 8.0,
-          //     // ),
-          //     TextField(
-          //       controller: _phoneController,
-          //       keyboardType: TextInputType.number,
-          //       cursorColor: Theme.of(context).primaryColor,
-          //       decoration: InputDecoration(helperText: 'Phone number'),
-          //     ),
-          //   ],
-          // ),
-          SizedBox(
-            height: 16,
-          ),
-          FloatingActionButton(
-            elevation: 0.0,
-            onPressed: () {
-              final phone = _phoneController.text.trim();
-              loginUser(phone, context);
-            },
-            child: Icon(Icons.arrow_forward),
-          ),
-          SizedBox(height: 20.0),
-          GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => Registration()));
-              },
-              child: Text(
-                "New user? Register now",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.black),
-              ))
-        ],
-      ),
-    ));
+        ));
   }
 }
