@@ -32,6 +32,7 @@ class Register extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (_) => OTP(
+                        phoneNumber: _phoneController.text,
                         auth: _auth,
                         verificationId: verificationId,
                       )));

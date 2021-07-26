@@ -7,7 +7,13 @@ import 'package:flutter/material.dart';
 class OTP extends StatefulWidget {
   final String verificationId;
   final FirebaseAuth auth;
-  OTP({Key? key, required this.verificationId, required this.auth}) : super(key: key);
+  final String phoneNumber;
+  OTP(
+      {required this.phoneNumber,
+      Key? key,
+      required this.verificationId,
+      required this.auth})
+      : super(key: key);
 
   @override
   _OTPState createState() => _OTPState();
@@ -15,66 +21,137 @@ class OTP extends StatefulWidget {
 
 class _OTPState extends State<OTP> {
   TextEditingController _codeController = new TextEditingController();
+
+  Future<FirebaseAuth> loginUser(String phone, BuildContext context) async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    log("phone is : " + phone);
+    _auth.verifyPhoneNumber(
+        phoneNumber: "+91" + phone,
+        timeout: Duration(seconds: 60),
+        verificationCompleted: (AuthCredential credential) async {
+          UserCredential _userCredential =
+              await _auth.signInWithCredential(credential);
+          User? _user = _userCredential.user;
+          if (_user != null) {}
+        },
+        verificationFailed: (FirebaseAuthException exception) {
+          log(exception.toString());
+        },
+        codeSent: (String verificationId, int? forceResendingToken) async {
+          // final value = await Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (_) => OTP(
+          //               phoneNumber: widget.phoneNumber,
+          //               auth: _auth,
+          //               verificationId: verificationId,
+          //             )));
+        },
+        codeAutoRetrievalTimeout: (String re) {
+          log("Time out !!!! code happend");
+        });
+    // _myProgress.hide();
+    return _auth;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black),
-        elevation: 0.0,
         backgroundColor: Colors.white,
-        title: Text(
-          "Verify your device",
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 28),
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
-              TextField(
-                controller: _codeController,
-                keyboardType: TextInputType.number,
-                maxLength: 6,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32.0),
-                decoration: InputDecoration(helperText: "Enter OTP"),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              FloatingActionButton(
-                elevation: 0.0,
-                onPressed: () async {
-                  // MyProgress _myProgress = MyProgress(context);
-                  // _myProgress.show();
-                  final code = _codeController.text.trim();
-                  AuthCredential credential =
-                      PhoneAuthProvider.credential(verificationId: widget.verificationId, smsCode: code);
+        body: SingleChildScrollView(
+          child: Container(
+            width: screenWidth,
+            height: screenHeight,
+            padding: EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Verify",
+                  style: TextStyle(
+                      fontSize: screenWidth / 7,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.black),
+                ),
+                SizedBox(
+                  height: screenHeight / 20,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  width: screenWidth,
+                  child: TextField(
+                    maxLength: 6,
+                    controller: _codeController,
+                    keyboardType: TextInputType.number,
+                    cursorColor: Colors.black,
+                    scrollPadding: EdgeInsets.zero,
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.w100),
+                    decoration:
+                        InputDecoration(hintText: 'Enter OTP', prefixText: ""),
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: GestureDetector(
+                          onTap: () {
+                            final phone = widget.phoneNumber.trim();
+                            loginUser(phone, context);
+                          },
+                          child: Text(
+                            "Resend OTP",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                                color: Colors.blueAccent),
+                          )),
+                    ),
+                    IconButton(
+                      splashColor: Colors.white10,
+                      focusColor: Colors.white10,
+                      highlightColor: Colors.white10,
+                      icon: Icon(
+                        Icons.arrow_forward,
+                        color: Colors.blueAccent,
+                      ),
+                      onPressed: () async {
+                        // MyProgress _myProgress = MyProgress(context);
+                        // _myProgress.show();
+                        final code = _codeController.text.trim();
+                        AuthCredential credential =
+                            PhoneAuthProvider.credential(
+                                verificationId: widget.verificationId,
+                                smsCode: code);
 
-                  UserCredential result = await widget.auth.signInWithCredential(credential);
+                        UserCredential result =
+                            await widget.auth.signInWithCredential(credential);
 
-                  User? user = result.user;
+                        User? user = result.user;
 
-                  if (user != null) {
-                    // _myProgress.hide();
-                    log("Success with : " + user.phoneNumber.toString());
-                    Navigator.pop(context);
-                  } else {
-                    print("Error");
-                  }
-                  // _myProgress.hide();
-                },
-                child: Icon(Icons.arrow_forward),
-              ),
-            ],
+                        if (user != null) {
+                          // _myProgress.hide();
+                          log("Success with : " + user.phoneNumber.toString());
+                          Navigator.pop(context);
+                        } else {
+                          print("Error");
+                        }
+                        // _myProgress.hide();
+                      },
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
