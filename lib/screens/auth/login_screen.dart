@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:finshare/screens/auth/otp_screen.dart';
-import 'package:finshare/screens/auth/registration_screen.dart';
+import 'package:finshare/screens/auth/register_screen.dart';
 import 'package:finshare/util/progress_indc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,8 @@ class Login extends StatelessWidget {
         phoneNumber: "+91" + phone,
         timeout: Duration(seconds: 60),
         verificationCompleted: (AuthCredential credential) async {
-          UserCredential _userCredential = await _auth.signInWithCredential(credential);
+          UserCredential _userCredential =
+              await _auth.signInWithCredential(credential);
           User? _user = _userCredential.user;
           if (_user != null) {}
         },
@@ -56,43 +57,112 @@ class Login extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "LOGIN",
-                  style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold, color: Colors.black),
+                  "Login",
+                  style: TextStyle(
+                      fontSize: screenWidth / 7,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.black),
+                ),
+                SizedBox(
+                  height: screenHeight / 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                      width: screenWidth / 8,
+                      child: TextField(
+                        maxLength: 2,
+                        controller: _codeController,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.black,
+                        scrollPadding: EdgeInsets.zero,
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.w100),
+                        decoration:
+                            InputDecoration(hintText: "1", prefixText: "+"),
+                      ),
+                    ),
+                    Container(
+                      width: 1,
+                      height: 32,
+                      color: Colors.black,
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      width: screenWidth - 80 - screenWidth / 10,
+                      child: TextField(
+                        maxLength: 10,
+                        controller: _phoneController,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.black,
+                        scrollPadding: EdgeInsets.zero,
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.w100),
+                        decoration: InputDecoration(
+                            hintText: 'Enter phone no', prefixText: ""),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   height: 16,
-                ),
-                TextField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.number,
-                  cursorColor: Colors.black,
-                  scrollPadding: EdgeInsets.zero,
-                  style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-                  decoration: InputDecoration(helperText: 'Phone number', prefixText: "+91"),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FloatingActionButton(
-                    elevation: 0.0,
-                    onPressed: () {
-                      final phone = _phoneController.text.trim();
-                      loginUser(phone, context);
-                    },
-                    child: Icon(Icons.arrow_forward),
-                  ),
                 ),
                 SizedBox(height: 20.0),
-                GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => Registration()));
-                    },
-                    child: Text(
-                      "New user? Register now",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.black),
-                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => Register()));
+                              },
+                              child: Text(
+                                "New user?, ",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w100,
+                                    fontSize: 16.0,
+                                    color: Colors.black),
+                              )),
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => Register()));
+                              },
+                              child: Text(
+                                "Sign up",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
+                                    color: Colors.blueAccent),
+                              )),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      splashColor: Colors.white10,
+                      focusColor: Colors.white10,
+                      highlightColor: Colors.white10,
+                      icon: Icon(
+                        Icons.arrow_forward,
+                        color: Colors.blueAccent,
+                      ),
+                      onPressed: () {
+                        final phone = _phoneController.text.trim();
+                        loginUser(phone, context);
+                      },
+                    )
+                  ],
+                ),
               ],
             ),
           ),
