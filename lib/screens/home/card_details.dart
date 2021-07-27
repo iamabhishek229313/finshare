@@ -1,21 +1,21 @@
 import 'dart:developer';
-import 'dart:math' as math;
 
-import 'package:chart_components/chart_components.dart';
+import 'package:chart_components/bar_chart_component.dart';
+import 'package:finshare/screens/home/user_details.dart';
 import 'package:finshare/util/colors.dart';
 import 'package:finshare/util/data_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stacked_card_carousel/stacked_card_carousel.dart';
+import 'dart:math' as math;
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class CardDetails extends StatefulWidget {
+  const CardDetails({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  _CardDetailsState createState() => _CardDetailsState();
 }
 
-class _HomeState extends State<Home> {
+class _CardDetailsState extends State<CardDetails> {
   List<double> data = [];
   List<String> labels = [];
   bool loaded = false;
@@ -65,7 +65,6 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0.0,
-        title: Text("Home"),
         iconTheme: IconThemeData(color: Colors.black),
         actions: [IconButton(onPressed: _loadData, icon: Icon(Icons.refresh_outlined))],
       ),
@@ -112,33 +111,38 @@ class _HomeState extends State<Home> {
                 physics: BouncingScrollPhysics(),
                 itemCount: 5,
                 itemBuilder: (context, index) {
-                  return Container(
-                    height: screenWidth / 4.5,
-                    width: screenWidth / 4.5,
-                    margin: EdgeInsets.only(left: 16.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7),
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            CircleAvatar(
-                              child: Text(
-                                "A",
-                                style: TextStyle(color: Colors.white),
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => UserDetails()));
+                    },
+                    child: Container(
+                      height: screenWidth / 4.5,
+                      width: screenWidth / 4.5,
+                      margin: EdgeInsets.only(left: 16.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7),
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              CircleAvatar(
+                                child: Text(
+                                  "A",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Colors.black,
                               ),
-                              backgroundColor: Colors.black,
-                            ),
-                            Text(
-                              "Aztlan",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            )
-                          ],
+                              Text(
+                                "Aztlan",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -269,97 +273,118 @@ class _HomeState extends State<Home> {
                 ListBody(
                   children: List.generate(
                       10,
-                      (index) => SizedBox(
-                            height: screenHeight * 0.09,
-                            child: Card(
-                              elevation: .2,
-                              shadowColor: AppColors.shadow,
-                              margin: EdgeInsets.only(top: 2.5),
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: CircleAvatar(
-                                        child: Text(
-                                          "A",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        backgroundColor: Colors.black,
-                                      ),
-                                    ),
-                                    Expanded(
-                                        flex: 8,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "La Colombe Coffee",
-                                                  style: TextStyle(
-                                                      fontSize: 18.0,
-                                                      fontWeight: FontWeight.w900,
-                                                      color: AppColors.text),
-                                                ),
-                                                Text(
-                                                  "\$18.50",
-                                                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w900),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Chicago, IL",
-                                                      style: TextStyle(
-                                                          fontSize: 12.0,
-                                                          fontWeight: FontWeight.w400,
-                                                          color: Colors.grey),
-                                                    ),
-                                                    Text(
-                                                      "Yesterday",
-                                                      style: TextStyle(
-                                                          fontSize: 12.0,
-                                                          fontWeight: FontWeight.w400,
-                                                          color: Colors.grey),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Text(
-                                                  "2%",
-                                                  style: TextStyle(
-                                                      fontSize: 12.0, fontWeight: FontWeight.w400, color: Colors.grey),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        )),
-                                    Expanded(
-                                      child: Icon(
-                                        Icons.arrow_forward_ios_outlined,
-                                        color: Colors.grey.shade400,
-                                        size: 22,
-                                      ),
-                                    )
-                                  ],
-                                ),
+                      (index) => TransactionCard(
+                            title: "La Colombe Coffee",
+                            subTitle: "\$18.50",
+                            leading: CircleAvatar(
+                              child: Text(
+                                "A",
+                                style: TextStyle(color: Colors.white),
                               ),
+                              backgroundColor: Colors.black,
                             ),
+                            time: "Yesterday",
+                            onPressed: () {},
                           )),
                 )
               ],
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class TransactionCard extends StatelessWidget {
+  const TransactionCard({
+    Key? key,
+    required this.title,
+    required this.subTitle,
+    required this.onPressed,
+    required this.leading,
+    required this.time,
+  }) : super(key: key);
+
+  final String title;
+  final String subTitle;
+  final Function onPressed;
+  final Widget leading;
+  final String time;
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    return SizedBox(
+      height: screenHeight * 0.09,
+      child: Card(
+        elevation: .2,
+        shadowColor: AppColors.shadow,
+        margin: EdgeInsets.only(top: 2.5),
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(flex: 2, child: this.leading),
+              Expanded(
+                  flex: 8,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            this.title,
+                            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w900, color: AppColors.text),
+                          ),
+                          Text(
+                            this.subTitle,
+                            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w900),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Chicago, IL",
+                                style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400, color: Colors.grey),
+                              ),
+                              Text(
+                                this.time,
+                                style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            "2%",
+                            style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    this.onPressed;
+                  },
+                  child: Icon(
+                    Icons.arrow_forward_ios_outlined,
+                    color: Colors.grey.shade400,
+                    size: 22,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

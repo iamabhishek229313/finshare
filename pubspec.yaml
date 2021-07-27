@@ -14,7 +14,6 @@ dependencies:
   animated_text_kit: null
   animations: ^2.0.1
   cupertino_icons: null
-  feather_icons_flutter: null
   firebase_auth: ^3.0.1
   firebase_core: ^1.4.0
   flutter_bloc: null
@@ -32,6 +31,9 @@ dependencies:
   multiavatar: any
   awesome_card: ^1.1.5
   pin_code_fields: ^7.3.0
+  stacked_card_carousel: ^0.0.3-nullsafety.1
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

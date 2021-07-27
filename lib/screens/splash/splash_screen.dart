@@ -20,9 +20,18 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-          child: Text(
-        "FinShare",
-        style: TextStyle(fontSize: 56.0, color: Colors.black, fontWeight: FontWeight.bold),
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Fin",
+            style: TextStyle(fontSize: 56.0, color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "Share",
+            style: TextStyle(fontSize: 56.0, color: Colors.blue, fontWeight: FontWeight.bold),
+          ),
+        ],
       )),
     );
   }

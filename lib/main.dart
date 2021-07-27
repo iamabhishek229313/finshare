@@ -22,13 +22,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       theme: ThemeData(
-        primaryColor: Colors.blueGrey.shade800,
-        accentColor: Colors.black,
-        accentColorBrightness: Brightness.light,
-        textTheme: GoogleFonts.latoTextTheme(
-          Theme.of(context).textTheme,
-        ),
-      ),
+          primaryColor: Colors.blueGrey.shade800,
+          accentColor: Colors.black,
+          accentColorBrightness: Brightness.light,
+          textTheme: GoogleFonts.latoTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          iconTheme: IconThemeData(color: Colors.black)),
       home: SplashScreen(),
     );
   }

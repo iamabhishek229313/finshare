@@ -1,4 +1,5 @@
 import 'package:finshare/screens/auth/login_screen.dart';
+import 'package:finshare/screens/home/card_details.dart';
 import 'package:finshare/screens/home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,7 +20,7 @@ class _StateWrapperScreenState extends State<StateWrapperScreen> {
         builder: (BuildContext context, snapshot) {
           print("Snapshot Data is : " + snapshot.data.toString());
           if (snapshot.hasData) {
-            return Home();
+            return CardDetails();
           }
           return Login(); // Contains option for Google sign in.
         }); // For this time being we are triggering scrren to the startscreen .
