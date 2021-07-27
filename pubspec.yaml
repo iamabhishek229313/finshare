@@ -31,7 +31,7 @@ dependencies:
   chart_components: ^1.0.1
   multiavatar: any
   awesome_card: ^1.1.5
-
+  pin_code_fields: ^7.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

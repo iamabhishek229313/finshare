@@ -17,8 +17,7 @@ class Login extends StatelessWidget {
         phoneNumber: "+91" + phone,
         timeout: Duration(seconds: 60),
         verificationCompleted: (AuthCredential credential) async {
-          UserCredential _userCredential =
-              await _auth.signInWithCredential(credential);
+          UserCredential _userCredential = await _auth.signInWithCredential(credential);
           User? _user = _userCredential.user;
           if (_user != null) {}
         },
@@ -59,10 +58,7 @@ class Login extends StatelessWidget {
               children: <Widget>[
                 Text(
                   "Login",
-                  style: TextStyle(
-                      fontSize: screenWidth / 7,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black),
+                  style: TextStyle(fontSize: screenWidth / 7, fontWeight: FontWeight.w900, color: Colors.black),
                 ),
                 SizedBox(
                   height: screenHeight / 20,
@@ -80,16 +76,9 @@ class Login extends StatelessWidget {
                         keyboardType: TextInputType.number,
                         cursorColor: Colors.black,
                         scrollPadding: EdgeInsets.zero,
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.w100),
-                        decoration:
-                            InputDecoration(hintText: "1", prefixText: "+"),
+                        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w100),
+                        decoration: InputDecoration(hintText: "1", prefixText: "+"),
                       ),
-                    ),
-                    Container(
-                      width: 1,
-                      height: 32,
-                      color: Colors.black,
                     ),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -100,10 +89,8 @@ class Login extends StatelessWidget {
                         keyboardType: TextInputType.number,
                         cursorColor: Colors.black,
                         scrollPadding: EdgeInsets.zero,
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.w100),
-                        decoration: InputDecoration(
-                            hintText: 'Enter phone no', prefixText: ""),
+                        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w100),
+                        decoration: InputDecoration(hintText: 'Enter phone no', prefixText: ""),
                       ),
                     ),
                   ],
@@ -120,31 +107,19 @@ class Login extends StatelessWidget {
                         children: [
                           GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => Register()));
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => Register()));
                               },
                               child: Text(
                                 "New user?, ",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w100,
-                                    fontSize: 16.0,
-                                    color: Colors.black),
+                                style: TextStyle(fontWeight: FontWeight.w100, fontSize: 16.0, color: Colors.black),
                               )),
                           GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => Register()));
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => Register()));
                               },
                               child: Text(
                                 "Sign up",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.0,
-                                    color: Colors.blueAccent),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.blueAccent),
                               )),
                         ],
                       ),
