@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chart_components/bar_chart_component.dart';
+import 'package:finshare/screens/home/add_credit_card.dart';
 import 'package:finshare/screens/home/my_cards.dart';
 import 'package:finshare/screens/home/user_details.dart';
 import 'package:finshare/util/colors.dart';
@@ -172,7 +173,9 @@ class _CardDetailsState extends State<CardDetails> {
                                   ],
                                 )))
                         : GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddCreditCard()));
+                            },
                             child: Container(
                                 width: screenWidth * 0.8,
                                 margin: EdgeInsets.only(top: 24.0, bottom: 24.0),

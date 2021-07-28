@@ -22,13 +22,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.6.1"
-  awesome_card:
-    dependency: "direct main"
-    description:
-      name: awesome_card
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.5"
   bloc:
     dependency: transitive
     description:
@@ -174,6 +167,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.0.1"
+  flutter_credit_card:
+    dependency: "direct main"
+    description:
+      name: flutter_credit_card
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   flutter_phoenix:
     dependency: "direct main"
     description:

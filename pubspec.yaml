@@ -29,10 +29,10 @@ dependencies:
   # progress_dialog: null
   chart_components: ^1.0.1
   multiavatar: any
-  awesome_card: ^1.1.5
   pin_code_fields: ^7.3.0
   carousel_slider: ^4.0.0
-
+  flutter_credit_card: ^2.0.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

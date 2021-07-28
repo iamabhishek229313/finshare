@@ -1,6 +1,3 @@
-import 'package:awesome_card/credit_card.dart';
-import 'package:awesome_card/extra/card_type.dart';
-import 'package:awesome_card/style/card_background.dart';
 import 'package:finshare/util/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -34,20 +31,21 @@ class _MyCardsState extends State<MyCards> {
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: CreditCard(
-                  cardNumber: "5450 **** **** 7854",
-                  cardExpiry: "10/25",
-                  cardHolderName: "Card Holder",
-                  cvv: "456",
-                  bankName: "Axis Bank",
-                  cardType: CardType.masterCard, // Optional if you want to override Card Type
-                  showBackSide: false,
-                  frontBackground: CardBackgrounds.white,
-                  backBackground: CardBackgrounds.white,
-                  showShadow: true,
-                  textExpDate: 'Exp. Date',
-                  textName: 'Name',
-                  textExpiry: 'MM/YY'),
+              child: Container(),
+              // child: CreditCard(
+              //     cardNumber: "5450 **** **** 7854",
+              //     cardExpiry: "10/25",
+              //     cardHolderName: "Card Holder",
+              //     cvv: "456",
+              //     bankName: "Axis Bank",
+              //     cardType: CardType.masterCard, // Optional if you want to override Card Type
+              //     showBackSide: false,
+              //     frontBackground: CardBackgrounds.white,
+              //     backBackground: CardBackgrounds.white,
+              //     showShadow: true,
+              //     textExpDate: 'Exp. Date',
+              //     textName: 'Name',
+              //     textExpiry: 'MM/YY'),
             );
           }),
     );
