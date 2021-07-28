@@ -6,7 +6,6 @@ import 'package:finshare/util/colors.dart';
 import 'package:finshare/util/data_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stacked_card_carousel/stacked_card_carousel.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

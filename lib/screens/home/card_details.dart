@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chart_components/bar_chart_component.dart';
+import 'package:finshare/screens/home/my_cards.dart';
 import 'package:finshare/screens/home/user_details.dart';
 import 'package:finshare/util/colors.dart';
 import 'package:finshare/util/data_repo.dart';
@@ -58,6 +60,16 @@ class _CardDetailsState extends State<CardDetails> {
               onTap: () async {
                 await FirebaseAuth.instance.signOut().then((value) => log("singed out : "));
               },
+            ),
+            ListTile(
+              dense: true,
+              tileColor: Colors.blueGrey[100],
+              leading: Icon(Icons.logout),
+              title: Text("My Cards"),
+              subtitle: Text("View your all added cards"),
+              onTap: () async {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => MyCards()));
+              },
             )
           ],
         ),
@@ -72,33 +84,133 @@ class _CardDetailsState extends State<CardDetails> {
         physics: BouncingScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 44),
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Material(
-              borderRadius: BorderRadius.circular(7),
-              elevation: 9.0,
-              shadowColor: Colors.black87,
-              // child: CreditCard(
-              //     cardNumber: "5450 7879 4864 7854",
-              //     cardExpiry: "10/25",
-              //     cardHolderName: "Card Holder",
-              //     cvv: "456",
-              //     bankName: "Axis Bank",
-              //     cardType: CardType.masterCard, // Optional if you want to override Card Type
-              //     showBackSide: false,
-              //     frontBackground: CardBackgrounds.black,
-              //     backBackground: CardBackgrounds.white,
-              //     showShadow: true,
-              //     textExpDate: 'Exp. Date',
-              //     textName: 'Name',
-              //     textExpiry: 'MM/YY'),
-              child: Container(
-                  height: screenHeight * 0.275,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7),
-                    color: Color.fromRGBO(28, 30, 32, 1),
-                  )),
-            ),
+          SizedBox(
+            height: screenHeight * 0.6,
+            child: CarouselSlider(
+                // scrollDirection: Axis.horizontal,
+                items: List.generate(
+                    6,
+                    (index) => (index < 5)
+                        ? Container(
+                            width: screenWidth * 0.8,
+                            margin: EdgeInsets.only(top: 24.0, bottom: 24.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(7),
+                                color: Color.fromRGBO(28, 30, 32, 1),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    blurRadius: 12.0,
+                                    spreadRadius: 0.2,
+                                    offset: Offset(
+                                      3.0, // horizontal, move right 10
+                                      3.0, // vertical, move down 10
+                                    ),
+                                  )
+                                ]),
+                            child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Remote Allowance",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16.0),
+                                        ),
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(
+                                              Icons.settings,
+                                              color: Colors.white,
+                                            ))
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              RichText(
+                                                text: TextSpan(
+                                                  text: "\$307.96",
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w600, color: Colors.white, fontSize: 28.0),
+                                                  children: const <TextSpan>[
+                                                    TextSpan(
+                                                        text: '/\$1,0000',
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.w400,
+                                                            color: Colors.white,
+                                                            fontSize: 12.0)),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text(
+                                                "Balance \$USD",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400, color: Colors.white, fontSize: 10.0),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          "VISA",
+                                          style: TextStyle(
+                                              decorationStyle: TextDecorationStyle.wavy,
+                                              fontWeight: FontWeight.w900,
+                                              color: Colors.white,
+                                              fontSize: 22.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )))
+                        : GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                                width: screenWidth * 0.8,
+                                margin: EdgeInsets.only(top: 24.0, bottom: 24.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(7),
+                                  color: Colors.blue.shade100,
+                                ),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add,
+                                        color: AppColors.text,
+                                        size: 52.0,
+                                      ),
+                                      Text("Add more",
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.w700,
+                                          ))
+                                    ],
+                                  ),
+                                )),
+                          )),
+                options: CarouselOptions(
+                  height: double.maxFinite,
+                  aspectRatio: 16 / 9,
+                  viewportFraction: 0.8,
+                  initialPage: 0,
+                  enableInfiniteScroll: false,
+                  reverse: false,
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enlargeCenterPage: true,
+                  // onPageChanged: callbackFunction,
+                  scrollDirection: Axis.horizontal,
+                )),
           ),
           SizedBox(
             height: screenHeight * 0.02,

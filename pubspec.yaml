@@ -31,8 +31,7 @@ dependencies:
   multiavatar: any
   awesome_card: ^1.1.5
   pin_code_fields: ^7.3.0
-  stacked_card_carousel: ^0.0.3-nullsafety.1
-
+  carousel_slider: ^4.0.0
 
 dev_dependencies:
   flutter_test:
