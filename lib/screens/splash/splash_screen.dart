@@ -11,7 +11,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 5), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => StateWrapperScreen()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => StateWrapperScreen()));
     });
   }
 
@@ -25,11 +26,17 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Text(
             "Fin",
-            style: TextStyle(fontSize: 56.0, color: Colors.black, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 56.0,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
           ),
           Text(
             "Share",
-            style: TextStyle(fontSize: 56.0, color: Colors.blue, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 56.0,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold),
           ),
         ],
       )),

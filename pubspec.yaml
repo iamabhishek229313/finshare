@@ -32,6 +32,7 @@ dependencies:
   awesome_card: ^1.1.5
   pin_code_fields: ^7.3.0
   carousel_slider: ^4.0.0
+  onboarding: ^2.1.0
 
 dev_dependencies:
   flutter_test:
