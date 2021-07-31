@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chart_components/bar_chart_component.dart';
 import 'package:finshare/screens/home/add_credit_card.dart';
+import 'package:finshare/screens/home/add_new_user.dart';
 import 'package:finshare/screens/home/user_details.dart';
 import 'package:finshare/util/colors.dart';
 import 'package:finshare/util/data_repo.dart';
@@ -99,42 +100,78 @@ class _CardDetailsState extends State<CardDetails> {
                   physics: BouncingScrollPhysics(),
                   itemCount: 5,
                   itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => UserDetails()));
-                      },
-                      child: Container(
-                        height: screenWidth / 4.5,
-                        width: screenWidth / 4.5,
-                        margin: EdgeInsets.only(left: 16.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(7),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(
-                                  child: Text(
-                                    "A",
-                                    style: TextStyle(color: Colors.white),
+                    return (index < 4)
+                        ? InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => UserDetails()));
+                            },
+                            child: Container(
+                              height: screenWidth / 4.5,
+                              width: screenWidth / 4.5,
+                              margin: EdgeInsets.only(left: 16.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(7),
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      CircleAvatar(
+                                        child: Text(
+                                          (index == 0) ? "Y" : "A",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.black,
+                                      ),
+                                      Text(
+                                        (index == 0) ? "You" : "Aztlan",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    ],
                                   ),
-                                  backgroundColor: Colors.black,
                                 ),
-                                Text(
-                                  "Aztlan",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    );
+                          )
+                        : InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddNewUser()));
+                            },
+                            child: Container(
+                              height: screenWidth / 4.5,
+                              width: screenWidth / 4.5,
+                              margin: EdgeInsets.only(left: 16.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(7),
+                                color: Colors.blue.withAlpha(300),
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add,
+                                        color: Colors.black,
+                                        size: 34.0,
+                                      ),
+                                      Text(
+                                        "Add new user",
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
                   }),
             ),
             SizedBox(

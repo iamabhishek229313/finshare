@@ -23,6 +23,7 @@ class _UserDetailsState extends State<UserDetails> {
   void initState() {
     super.initState();
     DataRepository.clearData();
+    _loadData();
   }
 
   void _loadData() {
