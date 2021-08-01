@@ -31,8 +31,8 @@ dependencies:
   multiavatar: any
   pin_code_fields: ^7.3.0
   carousel_slider: ^4.0.0
-  flutter_credit_card: ^2.0.0
   credit_card_input_form: ^2.3.0
+  smooth_page_indicator: ^0.2.3
   
 dev_dependencies:
   flutter_test:

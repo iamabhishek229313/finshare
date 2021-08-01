@@ -1,5 +1,11 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:finshare/screens/onboarding/onboarding_screens.dart';
 import 'package:finshare/screens/state_wrapper_screen.dart';
+import 'package:finshare/util/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -13,6 +19,20 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 5), () {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => StateWrapperScreen()));
     });
+  }
+
+  _jumpToScreen(bool isfirstTime) {
+    log("Is first time? " + (!isfirstTime).toString());
+    Timer(
+        Duration(milliseconds: 1800),
+        () => Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => !isfirstTime ? StateWrapperScreen() : StateWrapperScreen())));
+  }
+
+  Future<dynamic> _fetchFirstTimeState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool(AppConstants.firstUser) ?? false;
+    return _jumpToScreen(isFirstTime);
   }
 
   @override

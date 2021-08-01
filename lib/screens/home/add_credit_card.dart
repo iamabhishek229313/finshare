@@ -4,7 +4,6 @@ import 'package:credit_card_input_form/constants/constanst.dart';
 import 'package:credit_card_input_form/credit_card_input_form.dart';
 import 'package:finshare/util/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_credit_card/flutter_credit_card.dart';
 
 class AddCreditCard extends StatefulWidget {
   const AddCreditCard({Key? key}) : super(key: key);
