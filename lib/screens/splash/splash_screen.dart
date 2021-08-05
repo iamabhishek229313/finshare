@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-
-import 'package:finshare/screens/onboarding/onboarding_screens.dart';
 import 'package:finshare/screens/state_wrapper_screen.dart';
 import 'package:finshare/util/constants.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +24,9 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(
         Duration(milliseconds: 1800),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => !isfirstTime ? StateWrapperScreen() : StateWrapperScreen())));
+            // as of now we're going for only stateWrapper screen.
+            context,
+            MaterialPageRoute(builder: (_) => !isfirstTime ? StateWrapperScreen() : StateWrapperScreen())));
   }
 
   Future<dynamic> _fetchFirstTimeState() async {
