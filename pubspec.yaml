@@ -28,11 +28,12 @@ dependencies:
   transparent_image: null
   # progress_dialog: null
   chart_components: ^1.0.1
-  multiavatar: any
   pin_code_fields: ^7.3.0
   carousel_slider: ^4.0.0
   credit_card_input_form: ^2.3.0
   smooth_page_indicator: ^0.2.3
+  multiavatar: ^0.1.5
+  flutter_svg:
   
 dev_dependencies:
   flutter_test:
