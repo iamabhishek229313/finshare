@@ -1,1 +1,3 @@
-class AppConstants {}
+class AppConstants {
+  static const String firstUser = "firstUser";
+}

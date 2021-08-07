@@ -21,7 +21,7 @@ class _StateWrapperScreenState extends State<StateWrapperScreen> {
         builder: (BuildContext context, snapshot) {
           print("Snapshot Data is : " + snapshot.data.toString());
           if (snapshot.hasData) {
-            return CardDetails();
+            return Home();
           }
           return Onboard(); // Contains option for Google sign in.
         }); // For this time being we are triggering scrren to the startscreen .

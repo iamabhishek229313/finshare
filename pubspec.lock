@@ -22,13 +22,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.7.0"
-  awesome_card:
-    dependency: "direct main"
-    description:
-      name: awesome_card
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.5"
   bloc:
     dependency: transitive
     description:
@@ -85,6 +78,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+  credit_card_input_form:
+    dependency: "direct main"
+    description:
+      name: credit_card_input_form
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.0"
   crypto:
     dependency: transitive
     description:
@@ -162,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  flip_card:
+    dependency: transitive
+    description:
+      name: flip_card
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -448,6 +455,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smooth_page_indicator:
+    dependency: "direct main"
+    description:
+      name: smooth_page_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.3"
   source_span:
     dependency: transitive
     description:
