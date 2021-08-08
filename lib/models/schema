@@ -1,0 +1,67 @@
+{
+    "BANK_NAME": "Sdf",
+    "CARD_NUMBER": "838485858585",
+    "SECURITY_CODE_CVC": 345,
+    "VALID_THRU": "34/45",
+    "CARDHOLDER_NAME": "adfs",
+    "TYPE": "mater",
+    "AVAIL_BALANCE": 23454.53,
+    "all_transactions": [
+        {
+            "timestamp": 242323,
+            "location": "street",
+            "store_name": "city mall",
+            "amount": 345.67,
+            "by": "name",
+            "email": "@gma"
+        },
+        {
+            "timestamp": 242323,
+            "location": "street",
+            "store_name": "city mall",
+            "amount": 345.67,
+            "by": "name",
+            "email": "@gma"
+        }
+    ],
+    "members": [
+        {
+            "email_id": "asdf",
+            "name": "af",
+            "addedAt": 2323,
+            "colorHEX": "#rer",
+            "avatarCode": "sdf",
+            "transactions": [
+                {
+                    "timestamp": 242323,
+                    "location": "street",
+                    "store_name": "city mall",
+                    "amount": 345.67,
+                    "by": "name",
+                    "email": "@gma"
+                }
+            ],
+            "category": "friend",
+            "permissions": [
+                {
+                    "purchase_limit": 34.56,
+                    "day_limit": 34.5,
+                    "month_limit": 45.6
+                },
+                {
+                    "purchase_limit": 34.56,
+                    "day_limit": 34.5,
+                    "month_limit": 45.6,
+                    "timings": "45|45",
+                    "category": "Fsd"
+                },
+                {
+                    "purchase_limit": 34.56,
+                    "day_limit": 34.5,
+                    "month_limit": 45.6,
+                    "timings": "45|45"
+                }
+            ]
+        }
+    ]
+}

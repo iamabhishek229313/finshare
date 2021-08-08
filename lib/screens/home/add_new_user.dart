@@ -1,5 +1,6 @@
-import 'dart:developer';
-
+import 'package:finshare/models/card_data.dart';
+import 'package:finshare/screens/home/card_details.dart';
+import 'package:finshare/screens/home/grant_permissions.dart';
 import 'package:finshare/util/colors.dart';
 import 'package:finshare/util/my_svg_painter.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,8 @@ import 'package:multiavatar/multiavatar.dart';
 import 'dart:math' as math;
 
 class AddNewUser extends StatefulWidget {
-  const AddNewUser({Key? key}) : super(key: key);
+  const AddNewUser({Key? key, required this.cardData}) : super(key: key);
+  final CardData? cardData;
 
   @override
   _AddNewUserState createState() => _AddNewUserState();
@@ -17,6 +19,11 @@ class AddNewUser extends StatefulWidget {
 class _AddNewUserState extends State<AddNewUser> {
   int chosedPerson = -1;
   DrawableRoot? _chosedAvatar;
+  String? _chosedAvatarCode;
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +45,24 @@ class _AddNewUserState extends State<AddNewUser> {
             if (chosedPerson == -1)
               return;
             else {
-              // [do something]
+              widget.cardData?.members?.add(Members(
+                  addedAt: DateTime.now().microsecondsSinceEpoch,
+                  avatarCode: _chosedAvatarCode,
+                  permissions: null,
+                  category: (chosedPerson == 0)
+                      ? "Partner"
+                      : (chosedPerson == 1)
+                          ? "Child"
+                          : "Others",
+                  emailId: _emailController.text.trim(),
+                  name: _nameController.text.trim(),
+                  transactions: []));
+
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => GrantPermissions(
+                        chosedPerson: chosedPerson,
+                        cardData: widget.cardData,
+                      )));
             }
           },
           child: Container(
@@ -46,7 +70,7 @@ class _AddNewUserState extends State<AddNewUser> {
             color: AppColors.cardColor,
             child: Center(
               child: Text(
-                "INVITE",
+                "GRANT PERMISSIONS",
                 style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 18.0),
               ),
             ),
@@ -58,18 +82,131 @@ class _AddNewUserState extends State<AddNewUser> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Choose Person",
-                  style: TextStyle(fontSize: 34.0, fontWeight: FontWeight.w900),
-                ),
-                Text(
-                  "Invite a member to share your card",
-                  style: TextStyle(fontSize: 14.0, color: Colors.grey, fontWeight: FontWeight.w400),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          "Choose Avatar",
+                          style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w900),
+                        ),
+                        Text(
+                          "Invite a member to share your card",
+                          style: TextStyle(fontSize: 14.0, color: Colors.grey, fontWeight: FontWeight.w400),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        const int len = 30;
+                        List<DrawableRoot?> _avatarList = [];
+                        List<String?> _avatarCode = [];
+
+                        for (int currentIndex = 0; currentIndex < len; currentIndex++) {
+                          var l = new List.generate(12, (_) => math.Random().nextInt(100));
+                          String svgCode = multiavatar(l.join(), trBackground: true);
+                          // log(svgCode.toString());
+
+                          DrawableRoot? _svgRoot;
+                          await svg.fromSvgString(svgCode, svgCode).then((value) => _svgRoot = value);
+                          _avatarList.add(_svgRoot);
+                          _avatarCode.add(svgCode);
+                        }
+
+                        final mp = await showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+                          elevation: 10.0,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            return Container(
+                              decoration:
+                                  BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(20.0)),
+                              child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0).copyWith(top: 16.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Choose your favourite avatar",
+                                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
+                                      ),
+                                      SizedBox(
+                                        height: 16.0,
+                                      ),
+                                      GridView.count(
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          crossAxisCount: 5,
+                                          primary: false,
+                                          crossAxisSpacing: 10,
+                                          mainAxisSpacing: 10,
+                                          children: List.generate(
+                                            _avatarList.length,
+                                            (index) => _avatarList[index] == null
+                                                ? SizedBox.shrink()
+                                                : GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.of(context).pop(<String, dynamic>{
+                                                        "avatar": _avatarList[index],
+                                                        "code": _avatarCode[index]
+                                                      });
+                                                    },
+                                                    child: Center(
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                            color: Colors.green.shade50, shape: BoxShape.circle),
+                                                        child: CustomPaint(
+                                                          painter: MyPainter(_avatarList[index], Size(20.0, 20.0)),
+                                                          child: Container(),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                          )),
+                                      SizedBox(
+                                        height: 32.0,
+                                      )
+                                    ],
+                                  )),
+                            );
+                          },
+                        );
+
+                        if (mp != null) {
+                          setState(() {
+                            _chosedAvatar = mp['avatar'];
+                            _chosedAvatarCode = mp['code'];
+                          });
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: screenWidth / 15,
+                        child: _chosedAvatar == null
+                            ? Text(
+                                "A",
+                                style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w900, color: Colors.black),
+                              )
+                            : CustomPaint(
+                                painter: MyPainter(_chosedAvatar, Size(20.0, 20.0)),
+                                child: Container(),
+                              ),
+                        backgroundColor: Colors.blue.shade100,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(
-                  height: 32.0,
+                  height: 16.0,
                 ),
                 TextField(
+                  controller: _nameController,
                   cursorColor: Colors.black,
                   style: TextStyle(
                     fontSize: 18.0,
@@ -83,6 +220,7 @@ class _AddNewUserState extends State<AddNewUser> {
                   height: 16.0,
                 ),
                 TextField(
+                  controller: _emailController,
                   cursorColor: Colors.black,
                   style: TextStyle(
                     fontSize: 18.0,
@@ -96,6 +234,8 @@ class _AddNewUserState extends State<AddNewUser> {
                   height: 16.0,
                 ),
                 TextField(
+                  controller: _phoneNumberController,
+                  keyboardType: TextInputType.phone,
                   cursorColor: Colors.black,
                   style: TextStyle(
                     fontSize: 18.0,
@@ -111,112 +251,6 @@ class _AddNewUserState extends State<AddNewUser> {
               height: screenHeight * 0.05,
             ),
             Text(
-              "Choose an avatar",
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w900),
-            ),
-            SizedBox(
-              height: 32.0,
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: GestureDetector(
-                onTap: () async {
-                  const int len = 30;
-                  List<DrawableRoot?> _avatarList = [];
-
-                  for (int currentIndex = 0; currentIndex < len; currentIndex++) {
-                    var l = new List.generate(12, (_) => math.Random().nextInt(100));
-                    String svgCode = multiavatar(l.join());
-                    // log(svgCode.toString());
-
-                    DrawableRoot? _svgRoot;
-                    await svg.fromSvgString(svgCode, svgCode).then((value) => _svgRoot = value);
-                    _avatarList.add(_svgRoot);
-                  }
-
-                  final _selectedAvatarRoot = await showModalBottomSheet(
-                    context: context,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-                    elevation: 10.0,
-                    isScrollControlled: true,
-                    builder: (BuildContext context) {
-                      return Container(
-                        decoration:
-                            BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(20.0)),
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0).copyWith(top: 16.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Choose your favourite avatar",
-                                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
-                                ),
-                                SizedBox(
-                                  height: 16.0,
-                                ),
-                                GridView.count(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    crossAxisCount: 5,
-                                    primary: false,
-                                    crossAxisSpacing: 10,
-                                    mainAxisSpacing: 10,
-                                    children: List.generate(
-                                      _avatarList.length,
-                                      (index) => _avatarList[index] == null
-                                          ? SizedBox.shrink()
-                                          : GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).pop(_avatarList[index]);
-                                              },
-                                              child: Center(
-                                                child: CustomPaint(
-                                                  painter: MyPainter(_avatarList[index], Size(20.0, 20.0)),
-                                                  child: Container(),
-                                                ),
-                                              ),
-                                            ),
-                                    )),
-                                SizedBox(
-                                  height: 32.0,
-                                )
-                              ],
-                            )),
-                      );
-                    },
-                  );
-
-                  if (_selectedAvatarRoot != null) {
-                    setState(() {
-                      _chosedAvatar = _selectedAvatarRoot;
-                    });
-                  }
-                },
-                child: Material(
-                  shape: CircleBorder(),
-                  elevation: 3.0,
-                  child: CircleAvatar(
-                    radius: screenWidth / 10,
-                    child: _chosedAvatar == null
-                        ? Text(
-                            "A",
-                            style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w900, color: Colors.black),
-                          )
-                        : CustomPaint(
-                            painter: MyPainter(_chosedAvatar, Size(20.0, 20.0)),
-                            child: Container(),
-                          ),
-                    backgroundColor: Colors.blue.shade100,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: screenHeight * 0.05,
-            ),
-            Text(
               "Choose who you want to share with",
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w900),
             ),
@@ -224,7 +258,7 @@ class _AddNewUserState extends State<AddNewUser> {
               height: 32.0,
             ),
             SizedBox(
-              child: FlatButton(
+              child: OutlineButton(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Text(
                     chosedPerson == -1
@@ -235,7 +269,9 @@ class _AddNewUserState extends State<AddNewUser> {
                   onPressed: () async {
                     final _selectedCandidate = await showModalBottomSheet(
                       context: context,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
                       elevation: 10.0,
                       builder: (BuildContext context) {
                         return Container(
@@ -296,12 +332,13 @@ class _AddNewUserState extends State<AddNewUser> {
                                                   ),
                                                   Expanded(
                                                     child: Center(
-                                                        child: (chosedPerson != index)
-                                                            ? SizedBox.shrink()
-                                                            : Icon(
-                                                                Icons.check_circle,
-                                                                color: Colors.green.shade800,
-                                                              )),
+                                                        child: Icon(
+                                                      (chosedPerson != index)
+                                                          ? Icons.arrow_forward
+                                                          : Icons.check_circle,
+                                                      color:
+                                                          (chosedPerson != index) ? Colors.grey : Colors.green.shade800,
+                                                    )),
                                                   )
                                                 ],
                                               ),

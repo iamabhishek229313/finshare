@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:chart_components/chart_components.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finshare/models/user_data.dart';
 import 'package:finshare/screens/home/add_credit_card.dart';
 import 'package:finshare/screens/home/card_details.dart';
 import 'package:finshare/util/colors.dart';
@@ -23,6 +26,12 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<String?> _getEmail() async {
+    User? _user = FirebaseAuth.instance.currentUser;
+    String? _email = (await FirebaseFirestore.instance.collection('user_ids').doc(_user?.uid).get()).get("email");
+    return _email;
   }
 
   @override
@@ -68,44 +77,77 @@ class _HomeState extends State<Home> {
             )
           ],
         ),
-        body: ListView.builder(
-            itemCount: 10,
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return SizedBox(
-                  height: screenHeight / 3.5,
-                  child: (index < 9)
-                      ? GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => CardDetails()));
-                          },
-                          child: MyCreditCard())
-                      : GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddCreditCard()));
-                          },
-                          child: Container(
-                              margin: const EdgeInsets.all(16.0),
-                              decoration: BoxDecoration(
-                                  color: Colors.blue.withAlpha(300), borderRadius: BorderRadius.circular(7)),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.add,
-                                    size: 54.0,
-                                    color: Colors.black87,
-                                  ),
-                                  Text("Add more",
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.w900,
-                                      ))
-                                ],
-                              )),
-                        ));
-            }));
+        body: FutureBuilder(
+          future: _getEmail(),
+          builder: (BuildContext context, AsyncSnapshot email) {
+            if (email.hasData == false)
+              return Container(
+                  constraints: BoxConstraints.expand(),
+                  child: Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.black,
+                    backgroundColor: AppColors.background,
+                  )));
+
+            return StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('users_data').doc(email.data).snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.hasData == false)
+                    return Container(
+                        constraints: BoxConstraints.expand(),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.black,
+                          backgroundColor: AppColors.background,
+                        )));
+                  UserData _userData = UserData.fromJson(jsonDecode(jsonEncode(snapshot.data?.data())));
+
+                  return ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemCount: (_userData.cards?.length ?? 0) + 1,
+                      itemBuilder: (context, index) {
+                        return SizedBox(
+                            height: screenHeight / 3.5,
+                            child: (index < (_userData.cards?.length ?? 0))
+                                ? GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                          builder: (_) => CardDetails(
+                                                card_number: _userData.cards![index],
+                                              )));
+                                    },
+                                    child: MyCreditCard(
+                                      card_number: _userData.cards![index],
+                                    ))
+                                : GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddCreditCard()));
+                                    },
+                                    child: Container(
+                                        margin: const EdgeInsets.all(16.0),
+                                        decoration: BoxDecoration(
+                                            color: Colors.blue.withAlpha(300), borderRadius: BorderRadius.circular(7)),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.add,
+                                              size: 54.0,
+                                              color: Colors.black87,
+                                            ),
+                                            Text("Add more",
+                                                style: TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w900,
+                                                ))
+                                          ],
+                                        )),
+                                  ));
+                      });
+                });
+          },
+        ));
   }
 }
 

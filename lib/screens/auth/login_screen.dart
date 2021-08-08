@@ -47,99 +47,61 @@ class Login extends StatelessWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Container(
-            width: screenWidth,
-            height: screenHeight,
-            padding: EdgeInsets.symmetric(horizontal: 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Login",
-                  style: TextStyle(fontSize: screenWidth / 7, fontWeight: FontWeight.w900, color: Colors.black),
-                ),
-                SizedBox(
-                  height: screenHeight / 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                      width: screenWidth / 8,
-                      child: TextField(
-                        maxLength: 2,
-                        controller: _codeController,
-                        keyboardType: TextInputType.number,
-                        cursorColor: Colors.black,
-                        scrollPadding: EdgeInsets.zero,
-                        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w100),
-                        decoration: InputDecoration(hintText: "1", prefixText: "+"),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              width: screenWidth,
+              height: screenHeight,
+              padding: EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Login",
+                    style: TextStyle(fontSize: 44.0, fontWeight: FontWeight.w900, color: Colors.black),
+                  ),
+                  SizedBox(
+                    height: screenHeight / 20,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: TextField(
+                      controller: _phoneController,
+                      maxLength: 10,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Colors.black,
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: "Phone Number",
+                        labelStyle: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      width: screenWidth - 80 - screenWidth / 10,
-                      child: TextField(
-                        maxLength: 10,
-                        controller: _phoneController,
-                        keyboardType: TextInputType.number,
-                        cursorColor: Colors.black,
-                        scrollPadding: EdgeInsets.zero,
-                        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w100),
-                        decoration: InputDecoration(hintText: 'Enter phone no', prefixText: ""),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                SizedBox(height: 20.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => Register()));
-                              },
-                              child: Text(
-                                "New user?, ",
-                                style: TextStyle(fontWeight: FontWeight.w100, fontSize: 16.0, color: Colors.black),
-                              )),
-                          GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => Register()));
-                              },
-                              child: Text(
-                                "Sign up",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.blueAccent),
-                              )),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      splashColor: Colors.white10,
-                      focusColor: Colors.white10,
-                      highlightColor: Colors.white10,
-                      icon: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.blueAccent,
-                      ),
-                      onPressed: () {
+                  ),
+                  SizedBox(height: 20.0),
+                  Align(
+                    child: FloatingActionButton(
+                      onPressed: () async {
                         final phone = _phoneController.text.trim();
                         loginUser(phone, context);
                       },
-                    )
-                  ],
-                ),
-              ],
+                      child: Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.2,
+                  )
+                ],
+              ),
             ),
           ),
         ));

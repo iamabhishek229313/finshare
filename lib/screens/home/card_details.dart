@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chart_components/bar_chart_component.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finshare/models/card_data.dart';
 import 'package:finshare/screens/home/add_credit_card.dart';
 import 'package:finshare/screens/home/add_new_user.dart';
 import 'package:finshare/screens/home/user_details.dart';
@@ -13,7 +16,8 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class CardDetails extends StatefulWidget {
-  const CardDetails({Key? key}) : super(key: key);
+  const CardDetails({Key? key, required this.card_number}) : super(key: key);
+  final String? card_number;
 
   @override
   _CardDetailsState createState() => _CardDetailsState();
@@ -43,6 +47,12 @@ class _CardDetailsState extends State<CardDetails> {
     });
   }
 
+  Future<CardData> _getCard() async {
+    DocumentSnapshot _ds = await FirebaseFirestore.instance.collection('cards').doc(widget.card_number).get();
+    CardData _cardData = CardData.fromJson(jsonDecode(jsonEncode(_ds.data())));
+    return _cardData;
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -50,272 +60,272 @@ class _CardDetailsState extends State<CardDetails> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      // drawer: Drawer(
-      //   child: Column(
-      //     children: [
-      //       UserAccountsDrawerHeader(accountName: Text("admin"), accountEmail: Text("admin@gmail.com")),
-      //       ListTile(
-      //         dense: true,
-      //         tileColor: Colors.blueGrey[100],
-      //         leading: Icon(Icons.logout),
-      //         title: Text("Logout"),
-      //         subtitle: Text("Logout from this device"),
-      //         onTap: () async {
-      //           await FirebaseAuth.instance.signOut().then((value) => log("singed out : "));
-      //         },
-      //       ),
-      //       ListTile(
-      //         dense: true,
-      //         tileColor: Colors.blueGrey[100],
-      //         leading: Icon(Icons.logout),
-      //         title: Text("My Cards"),
-      //         subtitle: Text("View your all added cards"),
-      //         onTap: () async {
-      //           Navigator.of(context).push(MaterialPageRoute(builder: (_) => MyCards()));
-      //         },
-      //       )
-      //     ],
-      //   ),
-      // ),
-      // appBar: AppBar(
-      //   backgroundColor: AppColors.background,
-      //   elevation: 0.0,
-      //   iconTheme: IconThemeData(color: Colors.black),
-      //   actions: [IconButton(onPressed: _loadData, icon: Icon(Icons.refresh_outlined))],
-      // ),
       body: SafeArea(
-        child: ListView(
-          physics: BouncingScrollPhysics(),
-          padding: const EdgeInsets.only(bottom: 44),
-          children: [
-            MyCreditCard(),
-            SizedBox(
-              height: screenHeight * 0.02,
-            ),
-            SizedBox(
-              height: screenWidth / 4.5,
-              child: ListView.builder(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  scrollDirection: Axis.horizontal,
-                  physics: BouncingScrollPhysics(),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return (index < 4)
-                        ? InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => UserDetails()));
-                            },
-                            child: Container(
-                              height: screenWidth / 4.5,
-                              width: screenWidth / 4.5,
-                              margin: EdgeInsets.only(left: 16.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(7),
-                                color: Colors.white,
-                              ),
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      CircleAvatar(
-                                        child: Text(
-                                          (index == 0) ? "Y" : "A",
-                                          style: TextStyle(color: Colors.white),
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('cards').doc(widget.card_number).snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+            if (snapshot.hasData == false)
+              return Container(
+                  constraints: BoxConstraints.expand(),
+                  child: Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.black,
+                    backgroundColor: AppColors.background,
+                  )));
+
+            CardData? _cardData = CardData.fromJson(jsonDecode(jsonEncode(snapshot.data?.data())));
+
+            // log("card details stream :" + _cardData.toJson().toString());
+
+            return ListView(
+              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 44),
+              children: [
+                MyCreditCard(card_number: _cardData?.cARDNUMBER),
+                SizedBox(
+                  height: screenHeight * 0.02,
+                ),
+                SizedBox(
+                  height: screenWidth / 4.5,
+                  child: ListView.builder(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: (_cardData.members?.length ?? 0) + 1,
+                      itemBuilder: (context, index) {
+                        return (index < (_cardData.members?.length ?? 0))
+                            ? InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => UserDetails()));
+                                },
+                                child: Container(
+                                  height: screenWidth / 4.5,
+                                  width: screenWidth / 4.5,
+                                  margin: EdgeInsets.only(left: 16.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(7),
+                                    color: Colors.white,
+                                  ),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: screenWidth * 0.02, vertical: screenWidth * 0.02),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(
+                                            child: CircleAvatar(
+                                              child: Text(
+                                                (index == 0) ? "Y" : "A",
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                              backgroundColor: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            (index == 0) ? "You" : "Aztlan",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) => AddNewUser(
+                                            cardData: _cardData,
+                                          )));
+                                },
+                                child: Container(
+                                  height: screenWidth / 4.5,
+                                  width: screenWidth / 4.5,
+                                  margin: EdgeInsets.only(left: 16.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(7),
+                                    color: Colors.blue.withAlpha(300),
+                                  ),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.add,
+                                            color: Colors.black,
+                                            size: 34.0,
+                                          ),
+                                          Text(
+                                            "Add new user",
+                                            maxLines: 1,
+                                            textAlign: TextAlign.center,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                      }),
+                ),
+                // SizedBox(
+                //   height: 16.0,
+                // ),
+                // SizedBox(
+                //   height: screenHeight * 0.1,
+                //   child: Row(
+                //     children: [
+                //       Expanded(
+                //         child: Container(
+                //           margin: EdgeInsets.only(left: 16.0, right: 8.0),
+                //           decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(7),
+                //             color: Colors.white,
+                //           ),
+                //           child: Padding(
+                //             padding: const EdgeInsets.all(8.0),
+                //             child: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //               children: [
+                //                 Text(
+                //                   "Card balance",
+                //                   style: TextStyle(fontSize: 16.0),
+                //                 ),
+                //                 Text(
+                //                   "\$1,804.3",
+                //                   style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w900),
+                //                 ),
+                //                 Text(
+                //                   "\$16,804.3 available",
+                //                   style: TextStyle(fontSize: 11.0, color: Colors.grey, fontWeight: FontWeight.w900),
+                //                 )
+                //               ],
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //       Expanded(
+                //         child: Container(
+                //           margin: EdgeInsets.only(left: 8.0, right: 16.0),
+                //           decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(7),
+                //             color: Colors.white,
+                //           ),
+                //           child: Padding(
+                //             padding: const EdgeInsets.all(8.0),
+                //             child: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //               children: [
+                //                 Text(
+                //                   "Permissions",
+                //                   style: TextStyle(fontSize: 16.0),
+                //                 ),
+                //                 FloatingActionButton.extended(
+                //                     elevation: 0.0, onPressed: () {}, label: Icon(Icons.arrow_forward))
+                //               ],
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                SizedBox(height: 16.0),
+                Container(
+                  height: screenHeight * 0.32,
+                  margin: EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.only(bottom: 0, left: 8, right: 8, top: 8),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(7), color: Colors.white),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Total Spending",
+                        style: TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.w500),
+                      ),
+                      Text(
+                        "\$1,804.3",
+                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
+                      ),
+                      Expanded(
+                        child: BarChart(
+                          data: data,
+                          labels: labels,
+                          labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                          valueStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
+                          displayValue: true,
+                          reverse: true,
+                          getColor: DataRepository.getColor,
+                          // getIcon: DataRepository.getIcon,
+                          barWidth: 24,
+                          barSeparation: 14,
+                          animationDuration: Duration(milliseconds: 800),
+                          animationCurve: Curves.easeInOutSine,
+                          itemRadius: 3.5,
+                          iconHeight: 22,
+                          footerHeight: 24,
+                          headerValueHeight: 16,
+                          roundValuesOnText: false,
+                          lineGridColor: AppColors.background,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 16.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Latest Transactions",
+                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900, color: AppColors.text),
+                      ),
+                      SizedBox(
+                        height: 4.0,
+                      ),
+                      (_cardData?.allTransactions?.length ?? 0) > 0
+                          ? ListBody(
+                              children: List.generate(
+                                  _cardData?.allTransactions?.length ?? 0,
+                                  (index) => TransactionCard(
+                                        title: "La Colombe Coffee",
+                                        subTitle: "\$18.50",
+                                        leading: CircleAvatar(
+                                          child: Text(
+                                            "A",
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                          backgroundColor: Colors.black,
                                         ),
-                                        backgroundColor: Colors.black,
-                                      ),
-                                      Text(
-                                        (index == 0) ? "You" : "Aztlan",
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddNewUser()));
-                            },
-                            child: Container(
-                              height: screenWidth / 4.5,
-                              width: screenWidth / 4.5,
-                              margin: EdgeInsets.only(left: 16.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(7),
-                                color: Colors.blue.withAlpha(300),
-                              ),
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.add,
-                                        color: Colors.black,
-                                        size: 34.0,
-                                      ),
-                                      Text(
-                                        "Add new user",
-                                        maxLines: 1,
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                  }),
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            SizedBox(
-              height: screenHeight * 0.1,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(left: 16.0, right: 8.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7),
-                        color: Colors.white,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Card balance",
-                              style: TextStyle(fontSize: 16.0),
-                            ),
-                            Text(
-                              "\$1,804.3",
-                              style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w900),
-                            ),
-                            Text(
-                              "\$16,804.3 available",
-                              style: TextStyle(fontSize: 11.0, color: Colors.grey, fontWeight: FontWeight.w900),
+                                        time: "Yesterday",
+                                        onPressed: () {},
+                                      )),
                             )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(left: 8.0, right: 16.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7),
-                        color: Colors.white,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Permissions",
-                              style: TextStyle(fontSize: 16.0),
-                            ),
-                            FloatingActionButton.extended(
-                                elevation: 0.0, onPressed: () {}, label: Icon(Icons.arrow_forward))
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Container(
-              height: screenHeight * 0.32,
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              padding: EdgeInsets.only(bottom: 0, left: 8, right: 8, top: 8),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(7), color: Colors.white),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Total Spending",
-                    style: TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    "\$1,804.3",
-                    style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
-                  ),
-                  Expanded(
-                    child: BarChart(
-                      data: data,
-                      labels: labels,
-                      labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
-                      valueStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
-                      displayValue: true,
-                      reverse: true,
-                      getColor: DataRepository.getColor,
-                      // getIcon: DataRepository.getIcon,
-                      barWidth: 24,
-                      barSeparation: 14,
-                      animationDuration: Duration(milliseconds: 800),
-                      animationCurve: Curves.easeInOutSine,
-                      itemRadius: 3.5,
-                      iconHeight: 22,
-                      footerHeight: 24,
-                      headerValueHeight: 16,
-                      roundValuesOnText: false,
-                      lineGridColor: AppColors.background,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Latest Transactions",
-                    style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900, color: AppColors.text),
-                  ),
-                  SizedBox(
-                    height: 4.0,
-                  ),
-                  ListBody(
-                    children: List.generate(
-                        10,
-                        (index) => TransactionCard(
-                              title: "La Colombe Coffee",
-                              subTitle: "\$18.50",
-                              leading: CircleAvatar(
+                          : Container(
+                              height: 56.0,
+                              child: Center(
                                 child: Text(
-                                  "A",
-                                  style: TextStyle(color: Colors.white),
+                                  "No Recent transactions found",
+                                  style: TextStyle(fontSize: 14.0, color: Colors.grey),
                                 ),
-                                backgroundColor: Colors.black,
-                              ),
-                              time: "Yesterday",
-                              onPressed: () {},
-                            )),
-                  )
-                ],
-              ),
-            )
-          ],
+                              ))
+                    ],
+                  ),
+                )
+              ],
+            );
+          },
         ),
       ),
     );
