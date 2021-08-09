@@ -11,13 +11,17 @@ import 'package:finshare/screens/home/user_details.dart';
 import 'package:finshare/util/colors.dart';
 import 'package:finshare/util/data_repo.dart';
 import 'package:finshare/util/my_credit_card.dart';
+import 'package:finshare/util/my_svg_painter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 class CardDetails extends StatefulWidget {
-  const CardDetails({Key? key, required this.card_number}) : super(key: key);
+  const CardDetails({Key? key, required this.card_number, required this.color}) : super(key: key);
   final String? card_number;
+  final Color color;
 
   @override
   _CardDetailsState createState() => _CardDetailsState();
@@ -75,13 +79,11 @@ class _CardDetailsState extends State<CardDetails> {
 
             CardData? _cardData = CardData.fromJson(jsonDecode(jsonEncode(snapshot.data?.data())));
 
-            // log("card details stream :" + _cardData.toJson().toString());
-
             return ListView(
               physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.only(bottom: 44),
               children: [
-                MyCreditCard(card_number: _cardData?.cARDNUMBER),
+                MyCreditCard(color: widget.color, card_number: _cardData.cARDNUMBER),
                 SizedBox(
                   height: screenHeight * 0.02,
                 ),
@@ -91,12 +93,18 @@ class _CardDetailsState extends State<CardDetails> {
                       padding: const EdgeInsets.only(right: 16.0),
                       scrollDirection: Axis.horizontal,
                       physics: BouncingScrollPhysics(),
-                      itemCount: (_cardData.members?.length ?? 0) + 1,
+                      itemCount: (_cardData.members?.length ?? 0) + 2,
                       itemBuilder: (context, index) {
-                        return (index < (_cardData.members?.length ?? 0))
+                        return (index < (_cardData.members?.length ?? 0) + 2 - 1)
                             ? InkWell(
                                 onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => UserDetails()));
+                                  if (index != 0)
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (_) => UserDetails(
+                                              index: index - 1,
+                                              cardNumber: _cardData.cARDNUMBER,
+                                              memData: _cardData.members![index - 1],
+                                            )));
                                 },
                                 child: Container(
                                   height: screenWidth / 4.5,
@@ -115,15 +123,17 @@ class _CardDetailsState extends State<CardDetails> {
                                         children: [
                                           Expanded(
                                             child: CircleAvatar(
-                                              child: Text(
-                                                (index == 0) ? "Y" : "A",
-                                                style: TextStyle(color: Colors.white),
-                                              ),
+                                              child: (index == 0)
+                                                  ? Text(
+                                                      "Y",
+                                                      style: TextStyle(color: Colors.white),
+                                                    )
+                                                  : MyAva(members: _cardData.members![index - 1]),
                                               backgroundColor: Colors.black,
                                             ),
                                           ),
                                           Text(
-                                            (index == 0) ? "You" : "Aztlan",
+                                            (index == 0) ? "You" : _cardData.members![index - 1].name ?? "",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           )
@@ -294,10 +304,10 @@ class _CardDetailsState extends State<CardDetails> {
                       SizedBox(
                         height: 4.0,
                       ),
-                      (_cardData?.allTransactions?.length ?? 0) > 0
+                      (_cardData.allTransactions?.length ?? 0) > 0
                           ? ListBody(
                               children: List.generate(
-                                  _cardData?.allTransactions?.length ?? 0,
+                                  _cardData.allTransactions?.length ?? 0,
                                   (index) => TransactionCard(
                                         title: "La Colombe Coffee",
                                         subTitle: "\$18.50",
@@ -328,6 +338,38 @@ class _CardDetailsState extends State<CardDetails> {
           },
         ),
       ),
+    );
+  }
+}
+
+class MyAva extends StatefulWidget {
+  const MyAva({Key? key, required this.members}) : super(key: key);
+  final Members members;
+  @override
+  _MyAvaState createState() => _MyAvaState();
+}
+
+class _MyAvaState extends State<MyAva> {
+  DrawableRoot? _svgRoot;
+  Future<dynamic> _getSvg() async {
+    await svg
+        .fromSvgString(widget.members.avatarCode ?? "", widget.members.avatarCode ?? "")
+        .then((value) => _svgRoot = value);
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _getSvg(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData == false) return SizedBox.expand();
+        return CircleAvatar(
+            child: CustomPaint(
+          painter: MyPainter(_svgRoot, Size(20.0, 20.0)),
+          child: Container(),
+        ));
+      },
     );
   }
 }

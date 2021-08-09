@@ -9,9 +9,11 @@ class MyCreditCard extends StatefulWidget {
   const MyCreditCard({
     Key? key,
     required this.card_number,
+    required this.color,
   }) : super(key: key);
 
   final String? card_number;
+  final Color color;
 
   @override
   _MyCreditCardState createState() => _MyCreditCardState();
@@ -30,10 +32,9 @@ class _MyCreditCardState extends State<MyCreditCard> {
     return Container(
       height: screenHeight * 0.285,
       margin: EdgeInsets.all(16.0),
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(7), color: Color.fromRGBO(28, 30, 32, 1), boxShadow: [
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(7), color: widget.color, boxShadow: [
         BoxShadow(
-          color: Colors.black,
+          color: widget.color,
           blurRadius: 12.0,
           spreadRadius: 0.2,
           offset: Offset(
