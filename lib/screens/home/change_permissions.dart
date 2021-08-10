@@ -11,7 +11,7 @@ class ChangePermissions extends StatefulWidget {
   const ChangePermissions({Key? key, required this.cardNumber, required this.mem, required this.index})
       : super(key: key);
   final String cardNumber;
-  final Members mem;
+  final Members? mem;
   final int index;
   @override
   _ChangePermissionsState createState() => _ChangePermissionsState();
@@ -47,39 +47,39 @@ class _ChangePermissionsState extends State<ChangePermissions> {
   @override
   void initState() {
     super.initState();
-    _perTranscLimitController.text = widget.mem.permissions?.perTransactionLimit.toString() ?? "";
-    _dailyLimitController.text = widget.mem.permissions?.dailyLimit.toString() ?? "";
-    _monthlyLimitController.text = widget.mem.permissions?.monthlyLimit.toString() ?? "";
+    _perTranscLimitController.text = widget.mem!.permissions?.perTransactionLimit.toString() ?? "";
+    _dailyLimitController.text = widget.mem!.permissions?.dailyLimit.toString() ?? "";
+    _monthlyLimitController.text = widget.mem!.permissions?.monthlyLimit.toString() ?? "";
 
-    if (widget.mem.category == "Partner") {
+    if (widget.mem!.category == "Partner") {
       chosedPerson = 0;
-    } else if (widget.mem.category == "Child") {
+    } else if (widget.mem!.category == "Child") {
       chosedPerson = 1;
 
-      bool amFrom = (widget.mem.permissions!.timingFrom![widget.mem.permissions!.timingFrom!.length - 2] == 'A');
-      bool amTo = (widget.mem.permissions!.timingFrom![widget.mem.permissions!.timingTo!.length - 2] == 'A');
+      bool amFrom = (widget.mem!.permissions!.timingFrom![widget.mem!.permissions!.timingFrom!.length - 2] == 'A');
+      bool amTo = (widget.mem!.permissions!.timingFrom![widget.mem!.permissions!.timingTo!.length - 2] == 'A');
 
       _fromTime = TimeOfDay(
-          hour: int.parse(widget.mem.permissions!.timingFrom!.split(':')[0]) + (amFrom ? 0 : 12),
-          minute: int.parse(widget.mem.permissions!.timingFrom!.split(':')[0]));
+          hour: int.parse(widget.mem!.permissions!.timingFrom!.split(':')[0]) + (amFrom ? 0 : 12),
+          minute: int.parse(widget.mem!.permissions!.timingFrom!.split(':')[0]));
       _toTime = TimeOfDay(
-          hour: int.parse(widget.mem.permissions!.timingTo!.split(':')[0]) + (amTo ? 0 : 12),
-          minute: int.parse(widget.mem.permissions!.timingTo!.split(':')[0]));
+          hour: int.parse(widget.mem!.permissions!.timingTo!.split(':')[0]) + (amTo ? 0 : 12),
+          minute: int.parse(widget.mem!.permissions!.timingTo!.split(':')[0]));
 
-      for (int i = 0; i < (widget.mem.permissions!.categories!.length); i++) {
-        _chosedCategories.add(widget.mem.permissions!.categories![i]);
+      for (int i = 0; i < (widget.mem!.permissions!.categories!.length); i++) {
+        _chosedCategories.add(widget.mem!.permissions!.categories![i]);
       }
     } else {
       chosedPerson = 2;
-      bool amFrom = (widget.mem.permissions!.timingFrom![widget.mem.permissions!.timingFrom!.length - 2] == 'A');
-      bool amTo = (widget.mem.permissions!.timingFrom![widget.mem.permissions!.timingTo!.length - 2] == 'A');
+      bool amFrom = (widget.mem!.permissions!.timingFrom![widget.mem!.permissions!.timingFrom!.length - 2] == 'A');
+      bool amTo = (widget.mem!.permissions!.timingFrom![widget.mem!.permissions!.timingTo!.length - 2] == 'A');
 
       _fromTime = TimeOfDay(
-          hour: int.parse(widget.mem.permissions!.timingFrom!.split(':')[0]) + (amFrom ? 0 : 12),
-          minute: int.parse(widget.mem.permissions!.timingFrom!.split(':')[0]));
+          hour: int.parse(widget.mem!.permissions!.timingFrom!.split(':')[0]) + (amFrom ? 0 : 12),
+          minute: int.parse(widget.mem!.permissions!.timingFrom!.split(':')[0]));
       _toTime = TimeOfDay(
-          hour: int.parse(widget.mem.permissions!.timingTo!.split(':')[0]) + (amTo ? 0 : 12),
-          minute: int.parse(widget.mem.permissions!.timingTo!.split(':')[0]));
+          hour: int.parse(widget.mem!.permissions!.timingTo!.split(':')[0]) + (amTo ? 0 : 12),
+          minute: int.parse(widget.mem!.permissions!.timingTo!.split(':')[0]));
     }
   }
 
@@ -103,7 +103,7 @@ class _ChangePermissionsState extends State<ChangePermissions> {
             DocumentSnapshot _ds = await FirebaseFirestore.instance.collection('cards').doc(widget.cardNumber).get();
             CardData _cardData = CardData.fromJson(jsonDecode(jsonEncode(_ds.data())));
 
-            _cardData.members![widget.index].permissions = Permissions(
+            _cardData.members![widget.index]!.permissions = Permissions(
                 perTransactionLimit: double.parse(_perTranscLimitController.text),
                 dailyLimit: double.parse(_dailyLimitController.text),
                 monthlyLimit: double.parse(_monthlyLimitController.text),

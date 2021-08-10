@@ -6,8 +6,8 @@ class CardData {
   String? cARDHOLDERNAME;
   String? tYPE;
   double? aVAILBALANCE;
-  List<AllTransactions>? allTransactions;
-  List<Members>? members;
+  List<AllTransactions?>? allTransactions;
+  List<Members?>? members;
 
   CardData(
       {this.bANKNAME,
@@ -52,10 +52,10 @@ class CardData {
     data['TYPE'] = this.tYPE;
     data['AVAIL_BALANCE'] = this.aVAILBALANCE;
     if (this.allTransactions != null) {
-      data['all_transactions'] = this.allTransactions?.map((v) => v.toJson()).toList();
+      data['all_transactions'] = this.allTransactions?.map((v) => v?.toJson()).toList();
     }
     if (this.members != null) {
-      data['members'] = this.members?.map((v) => v.toJson()).toList();
+      data['members'] = this.members?.map((v) => v?.toJson()).toList();
     }
     return data;
   }

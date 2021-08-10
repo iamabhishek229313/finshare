@@ -133,7 +133,7 @@ class _CardDetailsState extends State<CardDetails> {
                                             ),
                                           ),
                                           Text(
-                                            (index == 0) ? "You" : _cardData.members![index - 1].name ?? "",
+                                            (index == 0) ? "You" : _cardData.members![index - 1]!.name ?? "",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           )
@@ -344,7 +344,7 @@ class _CardDetailsState extends State<CardDetails> {
 
 class MyAva extends StatefulWidget {
   const MyAva({Key? key, required this.members}) : super(key: key);
-  final Members members;
+  final Members? members;
   @override
   _MyAvaState createState() => _MyAvaState();
 }
@@ -353,7 +353,7 @@ class _MyAvaState extends State<MyAva> {
   DrawableRoot? _svgRoot;
   Future<dynamic> _getSvg() async {
     await svg
-        .fromSvgString(widget.members.avatarCode ?? "", widget.members.avatarCode ?? "")
+        .fromSvgString(widget.members!.avatarCode ?? "", widget.members!.avatarCode ?? "")
         .then((value) => _svgRoot = value);
     return true;
   }

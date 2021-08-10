@@ -66,7 +66,7 @@ class _GrantPermissionsState extends State<GrantPermissions> {
         ),
         bottomNavigationBar: GestureDetector(
           onTap: () async {
-            widget.cardData?.members?.last.permissions = Permissions(
+            widget.cardData?.members?.last!.permissions = Permissions(
                 perTransactionLimit: double.parse(_perTranscLimitController.text),
                 dailyLimit: double.parse(_dailyLimitController.text),
                 monthlyLimit: double.parse(_monthlyLimitController.text),
@@ -84,12 +84,12 @@ class _GrantPermissionsState extends State<GrantPermissions> {
                 from: _email,
                 status: "Pending",
                 cardNumber: widget.cardData?.cARDNUMBER,
-                to: widget.cardData?.members?.last.emailId,
+                to: widget.cardData?.members?.last!.emailId,
                 members: widget.cardData?.members?.last);
 
             DocumentSnapshot _ds = await FirebaseFirestore.instance
                 .collection('users_data')
-                .doc(widget.cardData?.members?.last.emailId)
+                .doc(widget.cardData?.members?.last!.emailId)
                 .get();
 
             if (_ds.exists) {
@@ -97,6 +97,9 @@ class _GrantPermissionsState extends State<GrantPermissions> {
               await FirebaseFirestore.instance.collection('invitations').add(_invitation.toJson()).then((value) {
                 documentHash = value.id;
               });
+
+              await FirebaseFirestore.instance.collection('invitations').doc(documentHash).set(_invitation.toJson());
+
               DocumentSnapshot _fromDs = await FirebaseFirestore.instance.collection('users_data').doc(_email).get();
               UserData _fromUser = UserData.fromJson(jsonDecode(jsonEncode(_fromDs.data())));
               _fromUser.invitesSent?.add(documentHash ?? "");
@@ -104,13 +107,13 @@ class _GrantPermissionsState extends State<GrantPermissions> {
 
               DocumentSnapshot _toDs = await FirebaseFirestore.instance
                   .collection('users_data')
-                  .doc(widget.cardData?.members?.last.emailId)
+                  .doc(widget.cardData?.members?.last!.emailId)
                   .get();
               UserData _toUser = UserData.fromJson(jsonDecode(jsonEncode(_toDs.data())));
               _toUser.invites?.add(documentHash ?? "");
               await FirebaseFirestore.instance
                   .collection('users_data')
-                  .doc(widget.cardData?.members?.last.emailId)
+                  .doc(widget.cardData?.members?.last!.emailId)
                   .update(_toUser.toJson());
 
               log("Invite sent!");

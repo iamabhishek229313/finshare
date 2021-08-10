@@ -18,7 +18,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class UserDetails extends StatefulWidget {
   const UserDetails({Key? key, required this.memData, required this.cardNumber, required this.index}) : super(key: key);
 
-  final Members memData;
+  final Members? memData;
   final String? cardNumber;
   final int index;
 
@@ -53,7 +53,7 @@ class _UserDetailsState extends State<UserDetails> {
 
   Future<dynamic> _getUserData() async {
     await svg
-        .fromSvgString(widget.memData.avatarCode ?? "", widget.memData.avatarCode ?? "")
+        .fromSvgString(widget.memData!.avatarCode ?? "", widget.memData!.avatarCode ?? "")
         .then((value) => _svgRoot = value);
     return true;
   }
@@ -113,7 +113,7 @@ class _UserDetailsState extends State<UserDetails> {
                       height: screenHeight * 0.005,
                     ),
                     Text(
-                      widget.memData.name.toString(),
+                      widget.memData!.name.toString(),
                       style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w900),
                     ),
                     Text(
@@ -121,7 +121,7 @@ class _UserDetailsState extends State<UserDetails> {
                       style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.grey),
                     ),
                     Text(
-                      widget.memData.category.toString(),
+                      widget.memData!.category.toString(),
                       style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400, color: Colors.black),
                     )
                   ],
@@ -136,7 +136,7 @@ class _UserDetailsState extends State<UserDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      (widget.memData.name?.split(' ')[0] ?? "") + "'s Spending",
+                      (widget.memData!.name?.split(' ')[0] ?? "") + "'s Spending",
                       style: TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.w500),
                     ),
                     Text(
