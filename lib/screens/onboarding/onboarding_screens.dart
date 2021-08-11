@@ -1,18 +1,51 @@
 import 'package:finshare/screens/auth/login_screen.dart';
 import 'package:finshare/util/colors.dart';
+import 'package:finshare/util/constants.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:onboarding/onboarding.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Onboard extends StatelessWidget {
-  const Onboard({Key? key}) : super(key: key);
+class PageModelData {
+  final String image_url;
+  final String title;
+  final String sub_title;
+
+  PageModelData(this.image_url, this.title, this.sub_title);
+}
+
+class Onboard extends StatefulWidget {
+  Onboard({Key? key}) : super(key: key);
+
+  @override
+  _OnboardState createState() => _OnboardState();
+}
+
+class _OnboardState extends State<Onboard> {
+  List<PageModelData> _screens = [
+    PageModelData('assets/images/credit8.png', 'Share Cards with Family',
+        'With FinShare, share your credit and debit cards with your near ones for easy and clean flow of family finances'),
+    PageModelData('assets/images/credit8.png', 'Share Cards with Family',
+        'With FinShare, share your credit and debit cards with your near ones for easy and clean flow of family finances'),
+    PageModelData('assets/images/credit8.png', 'Share Cards with Family',
+        'With FinShare, share your credit and debit cards with your near ones for easy and clean flow of family finances')
+  ];
+
+  var onboardingPagesList;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final onboardingPagesList = [
-      PageModel(
+    onboardingPagesList = List.generate(
+      _screens.length,
+      (index) => PageModel(
         widget: Container(
-          color: Colors.grey,
-          padding: EdgeInsets.only(top: 45.0, left: 45.0, right: 45.0),
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -21,29 +54,25 @@ class Onboard extends StatelessWidget {
                 children: [
                   Container(
                       child: Image.asset(
-                    'assets/images/credit8.png',
+                    _screens[index].image_url,
+                    fit: BoxFit.cover,
                   )),
                 ],
               ),
               Column(
                 children: [
-                  Container(
-                      width: double.infinity,
-                      child: Text(
-                        'Share Cards with Family',
-                        style: pageTitleStyle,
-                        textAlign: TextAlign.center,
-                      )),
+                  Text(
+                    _screens[index].title,
+                    style: TextStyle(fontSize: 28.0, color: Colors.black, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
                   SizedBox(
                     height: 20,
                   ),
-                  Container(
-                    width: double.infinity,
-                    child: Text(
-                      'With FinShare, share your credit and debit cards with your near ones for easy and clean flow of family finances',
-                      style: pageInfoStyle,
-                      textAlign: TextAlign.center,
-                    ),
+                  Text(
+                    _screens[index].sub_title,
+                    style: TextStyle(fontSize: 16.0, color: Colors.black),
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(
                     height: 20,
@@ -54,97 +83,8 @@ class Onboard extends StatelessWidget {
           ),
         ),
       ),
-      PageModel(
-        widget: Container(
-          color: Colors.grey[800],
-          padding: EdgeInsets.only(top: 45.0, left: 45.0, right: 45.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                      child: Image.asset(
-                    'assets/images/credit8.png',
-                  )),
-                ],
-              ),
-              Column(
-                children: [
-                  Container(
-                      width: double.infinity,
-                      child: Text(
-                        'Share Cards with Family',
-                        style: pageTitleStyle,
-                        textAlign: TextAlign.center,
-                      )),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: Text(
-                      'With FinShare, share your credit and debit cards with your near ones for easy and clean flow of family finances',
-                      style: pageInfoStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-      PageModel(
-        widget: Container(
-          color: Colors.black,
-          padding: EdgeInsets.only(top: 45.0, left: 45.0, right: 45.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                      child: Image.asset(
-                    'assets/images/credit8.png',
-                  )),
-                ],
-              ),
-              Column(
-                children: [
-                  Container(
-                      width: double.infinity,
-                      child: Text(
-                        'Share Cards with Family',
-                        style: pageTitleStyle,
-                        textAlign: TextAlign.center,
-                      )),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: Text(
-                      'With FinShare, share your credit and debit cards with your near ones for easy and clean flow of family finances',
-                      style: pageInfoStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    ];
+    );
+
     return Onboarding(
       skipButtonStyle: SkipButtonStyle(
           skipButtonText: Text("skip"),
@@ -155,14 +95,10 @@ class Onboard extends StatelessWidget {
           proceedpButtonText: Text("Continue"),
           proceedButtonColor: AppColors.background,
           proceedButtonBorderRadius: BorderRadius.circular(5),
-          proceedButtonRoute: (context) {
-            return Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Login(),
-              ),
-              (route) => false,
-            );
+          proceedButtonRoute: (context) async {
+            SharedPreferences _prefs = await SharedPreferences.getInstance();
+            _prefs.setBool(AppConstants.firstUser, false);
+            Phoenix.rebirth(context);
           }),
       pages: onboardingPagesList,
       footerPadding: EdgeInsets.symmetric(horizontal: 45.0, vertical: 20.0),

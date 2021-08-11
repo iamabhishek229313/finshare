@@ -15,45 +15,47 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 1100), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Onboard()));
-    });
   }
 
-  // _jumpToScreen(bool isfirstTime) {
-  //   log("Is first time? " + (!isfirstTime).toString());
-  //   Timer(
-  //       Duration(milliseconds: 1800),
-  //       () => Navigator.pushReplacement(
-  //           // as of now we're going for only stateWrapper screen.
-  //           context,
-  //           MaterialPageRoute(builder: (_) => !isfirstTime ? OnboardingScreen() : OnboardingScreen())));
-  // }
+  _jumpToScreen(bool isfirstTime) {
+    log("Is first time? " + (!isfirstTime).toString());
+    Timer(
+        Duration(milliseconds: 800),
+        () => Navigator.pushReplacement(
+            // as of now we're going for only stateWrapper screen.
+            context,
+            MaterialPageRoute(builder: (_) => isfirstTime == true ? Onboard() : StateWrapperScreen())));
+  }
 
-  // Future<dynamic> _fetchFirstTimeState() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   bool isFirstTime = prefs.getBool(AppConstants.firstUser) ?? false;
-  //   return _jumpToScreen(isFirstTime);
-  // }
+  Future<dynamic> _fetchFirstTimeState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool(AppConstants.firstUser) ?? true;
+    return _jumpToScreen(isFirstTime);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-          child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Fin",
-            style: TextStyle(fontSize: 56.0, color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            "Share",
-            style: TextStyle(fontSize: 56.0, color: Colors.blue, fontWeight: FontWeight.bold),
-          ),
-        ],
-      )),
+      body: FutureBuilder(
+        future: _fetchFirstTimeState(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return Center(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Fin",
+                style: TextStyle(fontSize: 56.0, color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Share",
+                style: TextStyle(fontSize: 56.0, color: Colors.blue, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ));
+        },
+      ),
     );
   }
 }

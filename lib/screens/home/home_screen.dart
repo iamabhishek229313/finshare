@@ -2,19 +2,24 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:auto_animated/auto_animated.dart';
 import 'package:chart_components/chart_components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/models/user_data.dart';
 import 'package:finshare/screens/home/add_credit_card.dart';
 import 'package:finshare/screens/home/all_transactions.dart';
 import 'package:finshare/screens/home/card_details.dart';
+import 'package:finshare/screens/home/manage_cards.dart';
 import 'package:finshare/screens/home/view_invites.dart';
+import 'package:finshare/util/animation_stuffs.dart';
 import 'package:finshare/util/colors.dart';
+import 'package:finshare/util/constants.dart';
 import 'package:finshare/util/data_repo.dart';
 import 'package:finshare/util/my_credit_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -28,13 +33,20 @@ class _HomeState extends State<Home> {
   String? _email;
   UserData? _userData;
 
+  // List<Color> _colors = [
+  //   Color.fromRGBO(225, 230, 233, 1),
+  //   Color.fromRGBO(197, 204, 255, 1),
+  //   Color.fromRGBO(1, 1, 1, 1),
+  //   Color.fromRGBO(252, 217, 228, 1),
+  //   Color.fromRGBO(233, 250, 245, 1),
+  //   Color.fromRGBO(248, 242, 210, 1)
+  // ];
+
   List<Color> _colors = [
-    Color.fromRGBO(225, 230, 233, 1),
-    Color.fromRGBO(197, 204, 255, 1),
     Color.fromRGBO(1, 1, 1, 1),
-    Color.fromRGBO(252, 217, 228, 1),
-    Color.fromRGBO(233, 250, 245, 1),
-    Color.fromRGBO(248, 242, 210, 1)
+    Color.fromRGBO(225, 79, 92, 1),
+    Color.fromRGBO(51, 151, 224, 1),
+    Color.fromRGBO(96, 43, 219, 1),
   ];
 
   @override
@@ -81,9 +93,17 @@ class _HomeState extends State<Home> {
               DrawerButton(
                 icon: Icons.style_outlined,
                 subTitle: "Delete or remove your card",
-                title: "Manage your card",
+                title: "Manage your cards",
                 // bg: Colors.red.shade1,
-                onPressed: () async {},
+                onPressed: () async {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => ManageCards(
+                                email: _email,
+                              )));
+                },
               ),
               DrawerButton(
                 icon: Icons.receipt_long_rounded,
@@ -115,7 +135,10 @@ class _HomeState extends State<Home> {
                 title: "Logout",
                 bg: Colors.red.shade100,
                 onPressed: () async {
-                  await FirebaseAuth.instance.signOut().then((value) => log("singed out : "));
+                  SharedPreferences _prefs = await SharedPreferences.getInstance();
+                  _prefs.setBool(AppConstants.firstUser, true).then((value) async {
+                    await FirebaseAuth.instance.signOut().then((value) => log("singed out : "));
+                  });
                 },
               ),
             ],
@@ -172,10 +195,14 @@ class _HomeState extends State<Home> {
                         )));
                   UserData _userData = UserData.fromJson(jsonDecode(jsonEncode(snapshot.data?.data())));
 
-                  return ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      itemCount: (_userData.cards?.length ?? 0) + 1,
-                      itemBuilder: (context, index) {
+                  return LiveList(
+                    showItemInterval: Duration(milliseconds: 75),
+                    showItemDuration: Duration(milliseconds: 175),
+                    reAnimateOnVisibility: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: (_userData.cards?.length ?? 0) + 1,
+                    itemBuilder: animationItemBuilder(
+                      (index) {
                         return SizedBox(
                             height: screenHeight / 3.5,
                             child: (index < (_userData.cards?.length ?? 0))
@@ -187,9 +214,16 @@ class _HomeState extends State<Home> {
                                                 card_number: _userData.cards![index],
                                               )));
                                     },
-                                    child: MyCreditCard(
-                                      color: _colors[index % _colors.length],
-                                      card_number: _userData.cards![index],
+                                    child: Hero(
+                                      transitionOnUserGestures: true,
+                                      tag: _userData.cards![index],
+                                      child: Material(
+                                        type: MaterialType.transparency, // likely needed
+                                        child: MyCreditCard(
+                                          color: _colors[index % _colors.length].withAlpha(400),
+                                          card_number: _userData.cards![index],
+                                        ),
+                                      ),
                                     ))
                                 : GestureDetector(
                                     onTap: () {
@@ -216,7 +250,9 @@ class _HomeState extends State<Home> {
                                           ],
                                         )),
                                   ));
-                      });
+                      },
+                    ),
+                  );
                 });
           },
         ));

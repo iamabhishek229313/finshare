@@ -83,7 +83,12 @@ class _CardDetailsState extends State<CardDetails> {
               physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.only(bottom: 44),
               children: [
-                MyCreditCard(color: widget.color, card_number: _cardData.cARDNUMBER),
+                Hero(
+                    transitionOnUserGestures: true,
+                    tag: _cardData.cARDNUMBER ?? "",
+                    child: Material(
+                        type: MaterialType.transparency, // likely needed
+                        child: MyCreditCard(color: widget.color.withAlpha(400), card_number: _cardData.cARDNUMBER))),
                 SizedBox(
                   height: screenHeight * 0.02,
                 ),

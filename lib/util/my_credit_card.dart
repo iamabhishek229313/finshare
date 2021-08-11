@@ -31,7 +31,7 @@ class _MyCreditCardState extends State<MyCreditCard> {
     final double screenHeight = MediaQuery.of(context).size.height;
     return Container(
       height: screenHeight * 0.285,
-      margin: EdgeInsets.all(16.0),
+      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(7), color: widget.color, boxShadow: [
         BoxShadow(
           color: widget.color,
@@ -51,8 +51,8 @@ class _MyCreditCardState extends State<MyCreditCard> {
                 constraints: BoxConstraints.expand(),
                 child: Center(
                     child: CircularProgressIndicator(
-                  color: Colors.black,
-                  backgroundColor: AppColors.background,
+                  color: Colors.white38,
+                  backgroundColor: Colors.transparent,
                 )));
           return Padding(
               padding: const EdgeInsets.all(16.0),

@@ -49,7 +49,7 @@ class _AddCreditCardState extends State<AddCreditCard> {
           end: Alignment.bottomRight,
           stops: [0.0, 0.4, 1.0],
           tileMode: TileMode.clamp),
-      borderRadius: BorderRadius.all(Radius.circular(15)));
+      borderRadius: BorderRadius.all(Radius.circular(7)));
 
   final buttonTextStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18);
 
