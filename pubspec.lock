@@ -345,6 +345,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  onboarding:
+    dependency: "direct main"
+    description:
+      name: onboarding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   path:
     dependency: transitive
     description:
@@ -517,7 +524,7 @@ packages:
       name: smooth_page_indicator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.3"
+    version: "0.3.0-nullsafety.0"
   source_span:
     dependency: transitive
     description:
