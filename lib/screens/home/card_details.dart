@@ -1,19 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
-
-import 'package:carousel_slider/carousel_slider.dart';
-// import 'package:chart_components/bar_chart_component.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/core/customized_chart.dart';
 import 'package:finshare/models/card_data.dart';
-import 'package:finshare/screens/home/add_credit_card.dart';
 import 'package:finshare/screens/home/add_new_user.dart';
 import 'package:finshare/screens/home/user_details.dart';
 import 'package:finshare/util/colors.dart';
 import 'package:finshare/util/data_repo.dart';
 import 'package:finshare/util/my_credit_card.dart';
 import 'package:finshare/util/my_svg_painter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -29,7 +24,7 @@ class CardDetails extends StatefulWidget {
 }
 
 class _CardDetailsState extends State<CardDetails> {
-  List<double> data = [];
+  List<List<double>> data = [];
   List<String> labels = [];
   bool loaded = false;
 
@@ -41,22 +36,21 @@ class _CardDetailsState extends State<CardDetails> {
   }
 
   List<Color> _userColors = [
-    Color.fromRGBO(225, 230, 233, 1),
-    Color.fromRGBO(197, 204, 255, 1),
-    Color.fromRGBO(1, 1, 1, 1),
-    Color.fromRGBO(252, 217, 228, 1),
-    Color.fromRGBO(233, 250, 245, 1),
-    Color.fromRGBO(248, 242, 210, 1)
+    Color.fromRGBO(249, 190, 124, 1),
+    Color.fromRGBO(228, 100, 114, 1),
+    Color.fromRGBO(100, 136, 228, 1),
+    Color.fromRGBO(48, 147, 151, 1),
+    // Color.fromRGBO(13, 37, 63, 1),
   ];
 
   void _loadData() {
     setState(() {
-      if (!loaded) {
-        data = DataRepository.getData();
-        loaded = true;
-      } else {
-        data[data.length - 1] = (math.Random().nextDouble() * 700).round() / 100;
-      }
+      // if (!loaded) {
+      //   data = DataRepository.getData();
+      //   loaded = true;
+      // } else {
+      //   data[data.length - 1] = (math.Random().nextDouble() * 700).round() / 100;
+      // }
       labels = DataRepository.getLabels();
     });
   }
@@ -88,6 +82,18 @@ class _CardDetailsState extends State<CardDetails> {
                   )));
 
             CardData? _cardData = CardData.fromJson(jsonDecode(jsonEncode(snapshot.data?.data())));
+
+            double balance = 0.0;
+            data = [];
+            for (int i = 0; i < DateTime.now().day; i++) {
+              List<double> dayActivity = [];
+              for (int j = 0; j < (_cardData.members!.length) + 1; j++) {
+                dayActivity.add(math.Random().nextDouble() * (215 - 15) + 15);
+                balance = balance + dayActivity.last;
+              }
+              data.add(dayActivity);
+            }
+            log("dummy data : " + data.toString());
 
             return ListView(
               physics: BouncingScrollPhysics(),
@@ -127,7 +133,7 @@ class _CardDetailsState extends State<CardDetails> {
                                   margin: EdgeInsets.only(left: 16.0),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(7),
-                                    color: Colors.white,
+                                    color: _userColors[index % _userColors.length],
                                   ),
                                   child: Center(
                                     child: Padding(
@@ -272,36 +278,61 @@ class _CardDetailsState extends State<CardDetails> {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(bottom: 0, left: 8, right: 8, top: 8),
-                        child: Column(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Total Spending",
-                              style: TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.w500),
+                            Column(
+                              children: [
+                                Text(
+                                  "Total Spending",
+                                  style: TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.w500),
+                                ),
+                                Text(
+                                  "\$${balance.roundToDouble()}",
+                                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
+                                ),
+                              ],
                             ),
                             Text(
-                              "\$1,804.3",
-                              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
+                              "August",
+                              style: TextStyle(fontSize: 14.0, color: Colors.black87, fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),
                       ),
                       Expanded(
                         child: BarChart(
-                          users: 3,
-                          data: [
-                            [30.49, 72.42, 12.76],
-                            [5.49, 90.42, 76.76],
-                            [40.0, 40.0, 20]
-                          ],
-                          labels: labels,
+                          users: data[0].length,
+                          data: data,
+                          labels: List.generate(DateTime.now().day, (index) => (index + 1).toString()).toList(),
                           labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
-                          valueStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
+                          valueStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
                           displayValue: true,
                           reverse: true,
-                          userColors: List.generate(3, (index) => _userColors[index % _userColors.length]).toList(),
-
-                          // getIcon: DataRepository.getIcon,
+                          userColors: List.generate(data[0].length, (index) => _userColors[index % _userColors.length])
+                              .toList(),
                           barWidth: 24,
+                          // getIcon: (double value) {
+                          //   if (value < 1) {
+                          //     return Icon(
+                          //       Icons.star_border,
+                          //       size: 24,
+                          //       color: ,
+                          //     );
+                          //   } else if (value < 2) {
+                          //     return Icon(
+                          //       Icons.star_half,
+                          //       size: 24,
+                          //       color: getColor(value),
+                          //     );
+                          //   } else
+                          //     return Icon(
+                          //       Icons.star,
+                          //       size: 24,
+                          //       color: getColor(value),
+                          //     );
+                          // },
                           barSeparation: 14,
                           animationDuration: Duration(milliseconds: 800),
                           animationCurve: Curves.easeInOutSine,
@@ -309,7 +340,7 @@ class _CardDetailsState extends State<CardDetails> {
                           iconHeight: 22,
                           footerHeight: 24,
                           headerValueHeight: 16,
-                          roundValuesOnText: false,
+                          roundValuesOnText: true,
                           lineGridColor: AppColors.background,
                         ),
                       ),
@@ -335,32 +366,29 @@ class _CardDetailsState extends State<CardDetails> {
                       SizedBox(
                         height: 4.0,
                       ),
-                      (_cardData.allTransactions?.length ?? 0) > 0
-                          ? ListBody(
-                              children: List.generate(
-                                  _cardData.allTransactions?.length ?? 0,
-                                  (index) => TransactionCard(
-                                        title: "La Colombe Coffee",
-                                        subTitle: "\$18.50",
-                                        leading: CircleAvatar(
-                                          child: Text(
-                                            "A",
-                                            style: TextStyle(color: Colors.white),
-                                          ),
-                                          backgroundColor: Colors.black,
-                                        ),
-                                        time: "Yesterday",
-                                        onPressed: () {},
-                                      )),
-                            )
-                          : Container(
-                              height: 56.0,
-                              child: Center(
-                                child: Text(
-                                  "No Recent transactions found",
-                                  style: TextStyle(fontSize: 14.0, color: Colors.grey),
-                                ),
-                              ))
+                      // ((_cardData.allTransactions?.length) + 12) > 0
+                      // ?
+                      ListBody(
+                        children: List.generate(
+                            12,
+                            (index) => TransactionCard(
+                                  title: "La Colombe Coffee",
+                                  subTitle: "\$18.50",
+                                  leading: CircleAvatar(
+                                      backgroundColor: AppColors.cardColor,
+                                      child: Center(child: Icon(Icons.attach_money, color: Colors.white))),
+                                  time: "Yesterday",
+                                  onPressed: () {},
+                                )),
+                      )
+                      // : Container(
+                      //     height: 56.0,
+                      //     child: Center(
+                      //       child: Text(
+                      //         "No Recent transactions found",
+                      //         style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                      //       ),
+                      //     ))
                     ],
                   ),
                 )

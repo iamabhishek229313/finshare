@@ -34,15 +34,6 @@ class _HomeState extends State<Home> {
   String? _email;
   UserData? _userData;
 
-  // List<Color> _colors = [
-  //   Color.fromRGBO(225, 230, 233, 1),
-  //   Color.fromRGBO(197, 204, 255, 1),
-  //   Color.fromRGBO(1, 1, 1, 1),
-  //   Color.fromRGBO(252, 217, 228, 1),
-  //   Color.fromRGBO(233, 250, 245, 1),
-  //   Color.fromRGBO(248, 242, 210, 1)
-  // ];
-
   List<Color> _colors = [
     Color.fromRGBO(22, 48, 85, 1),
     Color.fromRGBO(1, 1, 1, 1),

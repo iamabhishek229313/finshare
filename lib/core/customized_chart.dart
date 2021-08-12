@@ -162,6 +162,7 @@ class BarChart extends StatelessWidget {
         LayoutId(
           id: _Slot.chart,
           child: ListView.separated(
+            padding: EdgeInsets.only(left: 8.0, right: 8.0),
             itemCount: data.length,
             reverse: reverse,
             scrollDirection: Axis.horizontal,
@@ -293,8 +294,6 @@ class _BarItemState extends AnimatedWidgetBaseState<_BarItem> {
       _gradientStops.add((prev_prec + ((widget.value[i] / widget.dataSum) * 100.0)) / 100);
       prev_prec += ((widget.value[i] / widget.dataSum) * 100.0);
     }
-
-    log("Gradient stops : " + _gradientStops.toString());
 
     double? hf = _transform?.evaluate(animation);
 
