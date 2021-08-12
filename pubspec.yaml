@@ -28,7 +28,7 @@ dependencies:
   shared_preferences: null
   transparent_image: null
   # progress_dialog: null
-  chart_components: ^1.0.1
+  # chart_components: ^1.0.1
   pin_code_fields: ^7.3.0
   carousel_slider: ^4.0.0
   credit_card_input_form: ^2.3.0

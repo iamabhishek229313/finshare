@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:chart_components/bar_chart_component.dart';
+// import 'package:chart_components/bar_chart_component.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/models/card_data.dart';
 import 'package:finshare/models/user_data.dart';
@@ -143,28 +143,28 @@ class _UserDetailsState extends State<UserDetails> {
                       "\$167.59",
                       style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w900),
                     ),
-                    Expanded(
-                      child: BarChart(
-                        data: data,
-                        labels: labels,
-                        labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
-                        valueStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
-                        displayValue: true,
-                        reverse: true,
-                        getColor: DataRepository.getColor,
-                        // getIcon: DataRepository.getIcon,
-                        barWidth: 24,
-                        barSeparation: 14,
-                        animationDuration: Duration(milliseconds: 800),
-                        animationCurve: Curves.easeInOutSine,
-                        itemRadius: 3.5,
-                        iconHeight: 22,
-                        footerHeight: 24,
-                        headerValueHeight: 16,
-                        roundValuesOnText: false,
-                        lineGridColor: AppColors.background,
-                      ),
-                    ),
+                    // Expanded(
+                    //   child: BarChart(
+                    //     data: data,
+                    //     labels: labels,
+                    //     labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                    //     valueStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
+                    //     displayValue: true,
+                    //     reverse: true,
+                    //     getColor: DataRepository.getColor,
+                    //     // getIcon: DataRepository.getIcon,
+                    //     barWidth: 24,
+                    //     barSeparation: 14,
+                    //     animationDuration: Duration(milliseconds: 800),
+                    //     animationCurve: Curves.easeInOutSine,
+                    //     itemRadius: 3.5,
+                    //     iconHeight: 22,
+                    //     footerHeight: 24,
+                    //     headerValueHeight: 16,
+                    //     roundValuesOnText: false,
+                    //     lineGridColor: AppColors.background,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

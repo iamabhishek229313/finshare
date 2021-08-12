@@ -8,8 +8,14 @@ import 'package:finshare/util/progress_indc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
   final _phoneController = TextEditingController();
+
   final _codeController = TextEditingController();
 
   Future<FirebaseAuth> loginUser(String phone, BuildContext context) async {
@@ -102,8 +108,8 @@ class Login extends StatelessWidget {
                           ),
                         ),
                         onTap: (startLoading, stopLoading, btnState) async {
+                          startLoading();
                           if (btnState == ButtonState.Idle) {
-                            startLoading();
                             final phone = _phoneController.text.trim();
                             FirebaseAuth _auth = FirebaseAuth.instance;
                             log("phone is : " + phone);
@@ -119,7 +125,7 @@ class Login extends StatelessWidget {
                                   log(exception.toString());
                                 },
                                 codeSent: (String verificationId, int? forceResendingToken) async {
-                                  final value = await Navigator.push(
+                                  await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (_) => OTP(
@@ -131,9 +137,8 @@ class Login extends StatelessWidget {
                                 codeAutoRetrievalTimeout: (String re) {
                                   log("Time out !!!! code happend");
                                 });
-                            // await loginUser(phone, context);
-                            stopLoading();
                           }
+                          stopLoading();
                         },
                       ),
                     ),

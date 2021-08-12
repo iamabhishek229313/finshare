@@ -32,7 +32,7 @@ class _MyCreditCardState extends State<MyCreditCard> {
     return Container(
       height: screenHeight * 0.285,
       margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(7), color: widget.color, boxShadow: [
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: widget.color, boxShadow: [
         BoxShadow(
           color: widget.color,
           blurRadius: 12.0,

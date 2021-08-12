@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:chart_components/bar_chart_component.dart';
+// import 'package:chart_components/bar_chart_component.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finshare/core/customized_chart.dart';
 import 'package:finshare/models/card_data.dart';
 import 'package:finshare/screens/home/add_credit_card.dart';
 import 'package:finshare/screens/home/add_new_user.dart';
@@ -38,6 +39,15 @@ class _CardDetailsState extends State<CardDetails> {
     DataRepository.clearData();
     _loadData();
   }
+
+  List<Color> _userColors = [
+    Color.fromRGBO(225, 230, 233, 1),
+    Color.fromRGBO(197, 204, 255, 1),
+    Color.fromRGBO(1, 1, 1, 1),
+    Color.fromRGBO(252, 217, 228, 1),
+    Color.fromRGBO(233, 250, 245, 1),
+    Color.fromRGBO(248, 242, 210, 1)
+  ];
 
   void _loadData() {
     setState(() {
@@ -256,28 +266,40 @@ class _CardDetailsState extends State<CardDetails> {
                 Container(
                   height: screenHeight * 0.32,
                   margin: EdgeInsets.symmetric(horizontal: 16),
-                  padding: EdgeInsets.only(bottom: 0, left: 8, right: 8, top: 8),
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(7), color: Colors.white),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Total Spending",
-                        style: TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        "\$1,804.3",
-                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 0, left: 8, right: 8, top: 8),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Total Spending",
+                              style: TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              "\$1,804.3",
+                              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
+                            ),
+                          ],
+                        ),
                       ),
                       Expanded(
                         child: BarChart(
-                          data: data,
+                          users: 3,
+                          data: [
+                            [30.49, 72.42, 12.76],
+                            [5.49, 90.42, 76.76],
+                            [40.0, 40.0, 20]
+                          ],
                           labels: labels,
                           labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
                           valueStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
                           displayValue: true,
                           reverse: true,
-                          getColor: DataRepository.getColor,
+                          userColors: List.generate(3, (index) => _userColors[index % _userColors.length]).toList(),
+
                           // getIcon: DataRepository.getIcon,
                           barWidth: 24,
                           barSeparation: 14,
@@ -294,6 +316,10 @@ class _CardDetailsState extends State<CardDetails> {
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: 16.0,
+                ),
+
                 SizedBox(
                   height: 16.0,
                 ),

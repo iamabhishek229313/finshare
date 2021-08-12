@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/models/email.dart';
 import 'package:finshare/models/user_data.dart';
@@ -120,171 +121,58 @@ class _RegisterState extends State<Register> {
                   height: 32.0,
                 ),
                 Align(
-                    alignment: Alignment.center,
-                    child: FloatingActionButton(
-                      onPressed: () async {
-                        _registerUser().then((value) => Phoenix.rebirth(context));
-                      },
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
+                  child: SizedBox(
+                    child: ArgonButton(
+                      width: 4000,
+                      height: 50,
+                      borderRadius: 5.0,
+                      color: AppColors.cardColor,
+                      child: Text(
+                        "Register",
+                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
                       ),
-                    ))
+                      loader: Container(
+                        padding: EdgeInsets.all(10),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onTap: (startLoading, stopLoading, btnState) async {
+                        if (btnState == ButtonState.Idle) {
+                          startLoading();
+                          User? _user = FirebaseAuth.instance.currentUser;
+
+                          /// [At 'users_id' collections we have made user_id -> {email_id}]
+                          await FirebaseFirestore.instance
+                              .collection('user_ids')
+                              .doc(_user?.uid.toString())
+                              .set(new Email(email: _emailController.text).toJson());
+
+                          UserData _userData = UserData(
+                              name: _nameController.text.trim(),
+                              email: _emailController.text.trim(),
+                              phone: int.parse(_phoneController.text.trim()),
+                              userId: _user?.uid,
+                              createdAt: DateTime.now().microsecondsSinceEpoch,
+                              cards: [],
+                              invites: [],
+                              invitesSent: []);
+
+                          await FirebaseFirestore.instance
+                              .collection('users_data')
+                              .doc(_emailController.text)
+                              .set(_userData.toJson());
+                          log("User Registered");
+                          stopLoading();
+                          Phoenix.rebirth(context);
+                        }
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
           ],
-        )
-
-        // SingleChildScrollView(
-        //   child: Container(
-        //     width: screenWidth,
-        //     height: screenHeight,
-        //     padding: EdgeInsets.symmetric(horizontal: 32),
-        //     child: Column(
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       children: <Widget>[
-        //         Text(
-        //           "Register",
-        //           style: TextStyle(
-        //               fontSize: screenWidth / 7,
-        //               fontWeight: FontWeight.w900,
-        //               color: Colors.black),
-        //         ),
-        //         SizedBox(
-        //           height: screenHeight / 20,
-        //         ),
-        //         Container(
-        //           padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-        //           width: screenWidth,
-        //           child: TextField(
-        //             textInputAction: TextInputAction.unspecified,
-        //             controller: _fullNameController,
-        //             keyboardType: TextInputType.name,
-        //             cursorColor: Colors.black,
-        //             scrollPadding: EdgeInsets.zero,
-        //             style:
-        //                 TextStyle(fontSize: 18.0, fontWeight: FontWeight.w100),
-        //             decoration: InputDecoration(
-        //                 hintText: "Enter Full Name...", prefixText: ""),
-        //           ),
-        //         ),
-        //         SizedBox(
-        //           height: 20,
-        //         ),
-        //         Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //           crossAxisAlignment: CrossAxisAlignment.center,
-        //           children: [
-        //             Container(
-        //               padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-        //               width: screenWidth / 8,
-        //               child: TextField(
-        //                 maxLength: 2,
-        //                 controller: _codeController,
-        //                 keyboardType: TextInputType.number,
-        //                 cursorColor: Colors.black,
-        //                 scrollPadding: EdgeInsets.zero,
-        //                 style: TextStyle(
-        //                     fontSize: 18.0, fontWeight: FontWeight.w100),
-        //                 decoration:
-        //                     InputDecoration(hintText: "1", prefixText: "+"),
-        //               ),
-        //             ),
-        //             Container(
-        //               width: 1,
-        //               height: 32,
-        //               color: Colors.black,
-        //             ),
-        //             Container(
-        //               padding: EdgeInsets.symmetric(horizontal: 10),
-        //               width: screenWidth - 80 - screenWidth / 10,
-        //               child: TextField(
-        //                 maxLength: 10,
-        //                 controller: _phoneController,
-        //                 keyboardType: TextInputType.number,
-        //                 cursorColor: Colors.black,
-        //                 scrollPadding: EdgeInsets.zero,
-        //                 style: TextStyle(
-        //                     fontSize: 18.0, fontWeight: FontWeight.w100),
-        //                 decoration: InputDecoration(
-        //                     hintText: 'Enter phone no', prefixText: ""),
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //         SizedBox(height: 10),
-        //         Container(
-        //           padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-        //           width: screenWidth,
-        //           child: TextField(
-        //             textInputAction: TextInputAction.unspecified,
-        //             controller: _emailController,
-        //             keyboardType: TextInputType.emailAddress,
-        //             cursorColor: Colors.black,
-        //             scrollPadding: EdgeInsets.zero,
-        //             style:
-        //                 TextStyle(fontSize: 18.0, fontWeight: FontWeight.w100),
-        //             decoration: InputDecoration(
-        //                 hintText: "Enter email id...", prefixText: ""),
-        //           ),
-        //         ),
-        //         SizedBox(
-        //           height: screenHeight / 20,
-        //         ),
-        //         Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //           children: [
-        //             Container(
-        //               child: Row(
-        //                 children: [
-        //                   GestureDetector(
-        //                       onTap: () {
-        //                         Navigator.push(context,
-        //                             MaterialPageRoute(builder: (_) => Login()));
-        //                       },
-        //                       child: Text(
-        //                         "Existing user?, ",
-        //                         style: TextStyle(
-        //                             fontWeight: FontWeight.w100,
-        //                             fontSize: 16.0,
-        //                             color: Colors.black),
-        //                       )),
-        //                   GestureDetector(
-        //                       onTap: () {
-        //                         Navigator.push(context,
-        //                             MaterialPageRoute(builder: (_) => Login()));
-        //                       },
-        //                       child: Text(
-        //                         "Login",
-        //                         style: TextStyle(
-        //                             fontWeight: FontWeight.bold,
-        //                             fontSize: 16.0,
-        //                             color: Colors.blueAccent),
-        //                       )),
-        //                 ],
-        //               ),
-        //             ),
-        //             IconButton(
-        //               splashColor: Colors.white10,
-        //               focusColor: Colors.white10,
-        //               highlightColor: Colors.white10,
-        //               icon: Icon(
-        //                 Icons.arrow_forward,
-        //                 color: Colors.blueAccent,
-        //               ),
-        //               onPressed: () {
-        //                 final phone = _phoneController.text.trim();
-        //                 loginUser(phone, context);
-        //               },
-        //             )
-        //           ],
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // )
-
-        );
+        ));
   }
 }

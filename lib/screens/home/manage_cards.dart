@@ -16,9 +16,11 @@ class ManageCards extends StatefulWidget {
 
 class _ManageCardsState extends State<ManageCards> {
   List<Color> _colors = [
+    Color.fromRGBO(22, 48, 85, 1),
     Color.fromRGBO(1, 1, 1, 1),
     Color.fromRGBO(225, 79, 92, 1),
     Color.fromRGBO(51, 151, 224, 1),
+    Color.fromRGBO(18, 126, 121, 1),
     Color.fromRGBO(96, 43, 219, 1),
   ];
   @override

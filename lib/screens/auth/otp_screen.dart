@@ -55,7 +55,7 @@ class _OTPState extends State<OTP> {
                       activeColor: Colors.black,
                       inactiveColor: Colors.black),
                   cursorColor: Colors.black,
-                  animationDuration: Duration(milliseconds: 300),
+                  animationDuration: Duration(milliseconds: 0),
                   controller: _codeController,
                   keyboardType: TextInputType.number,
                   onCompleted: (v) {

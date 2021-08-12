@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:auto_animated/auto_animated.dart';
-import 'package:chart_components/chart_components.dart';
+// import 'package:chart_components/chart_components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/models/user_data.dart';
 import 'package:finshare/screens/home/add_credit_card.dart';
@@ -44,9 +44,11 @@ class _HomeState extends State<Home> {
   // ];
 
   List<Color> _colors = [
+    Color.fromRGBO(22, 48, 85, 1),
     Color.fromRGBO(1, 1, 1, 1),
     Color.fromRGBO(225, 79, 92, 1),
     Color.fromRGBO(51, 151, 224, 1),
+    Color.fromRGBO(18, 126, 121, 1),
     Color.fromRGBO(96, 43, 219, 1),
   ];
 
@@ -61,11 +63,17 @@ class _HomeState extends State<Home> {
 
     DocumentSnapshot _ds = await FirebaseFirestore.instance.collection('users_data').doc(_email).get();
 
-    setState(() {
-      _userData = UserData.fromJson(jsonDecode(jsonEncode(_ds.data())));
-    });
+    if (mounted)
+      setState(() {
+        _userData = UserData.fromJson(jsonDecode(jsonEncode(_ds.data())));
+      });
 
     return _email;
+  }
+
+  @override
+  void dispose() {
+    if (mounted) super.dispose();
   }
 
   @override
