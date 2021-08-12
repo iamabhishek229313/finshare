@@ -19,6 +19,7 @@ import 'package:finshare/util/my_credit_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -137,7 +138,7 @@ class _HomeState extends State<Home> {
                 onPressed: () async {
                   SharedPreferences _prefs = await SharedPreferences.getInstance();
                   _prefs.setBool(AppConstants.firstUser, true).then((value) async {
-                    await FirebaseAuth.instance.signOut().then((value) => log("singed out : "));
+                    await FirebaseAuth.instance.signOut().then((value) => Phoenix.rebirth(context));
                   });
                 },
               ),
@@ -198,7 +199,7 @@ class _HomeState extends State<Home> {
                   return LiveList(
                     showItemInterval: Duration(milliseconds: 75),
                     showItemDuration: Duration(milliseconds: 175),
-                    reAnimateOnVisibility: true,
+                    reAnimateOnVisibility: false,
                     scrollDirection: Axis.vertical,
                     itemCount: (_userData.cards?.length ?? 0) + 1,
                     itemBuilder: animationItemBuilder(

@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
 import 'package:finshare/screens/auth/otp_screen.dart';
 import 'package:finshare/screens/auth/register_screen.dart';
+import 'package:finshare/util/colors.dart';
 import 'package:finshare/util/progress_indc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ class Login extends StatelessWidget {
   Future<FirebaseAuth> loginUser(String phone, BuildContext context) async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     log("phone is : " + phone);
-    _auth.verifyPhoneNumber(
+    await _auth.verifyPhoneNumber(
         phoneNumber: "+91" + phone,
         timeout: Duration(seconds: 60),
         verificationCompleted: (AuthCredential credential) async {
@@ -64,36 +66,75 @@ class Login extends StatelessWidget {
                   SizedBox(
                     height: screenHeight / 20,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: TextField(
-                      controller: _phoneController,
-                      maxLength: 10,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.black,
-                      style: TextStyle(
-                        fontSize: 24.0,
+                  TextField(
+                    controller: _phoneController,
+                    maxLength: 10,
+                    keyboardType: TextInputType.number,
+                    cursorColor: Colors.black,
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: "Phone Number",
+                      labelStyle: TextStyle(
+                        fontSize: 18.0,
                         fontWeight: FontWeight.w600,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: "Phone Number",
-                        labelStyle: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                        ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 24.0),
                   Align(
-                    child: FloatingActionButton(
-                      onPressed: () async {
-                        final phone = _phoneController.text.trim();
-                        loginUser(phone, context);
-                      },
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
+                    child: SizedBox(
+                      child: ArgonButton(
+                        width: 350,
+                        height: 50,
+                        borderRadius: 5.0,
+                        color: AppColors.cardColor,
+                        child: Text(
+                          "Continue",
+                          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
+                        ),
+                        loader: Container(
+                          padding: EdgeInsets.all(10),
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
+                        onTap: (startLoading, stopLoading, btnState) async {
+                          if (btnState == ButtonState.Idle) {
+                            startLoading();
+                            final phone = _phoneController.text.trim();
+                            FirebaseAuth _auth = FirebaseAuth.instance;
+                            log("phone is : " + phone);
+                            await _auth.verifyPhoneNumber(
+                                phoneNumber: "+91" + phone,
+                                timeout: Duration(seconds: 60),
+                                verificationCompleted: (AuthCredential credential) async {
+                                  UserCredential _userCredential = await _auth.signInWithCredential(credential);
+                                  User? _user = _userCredential.user;
+                                  if (_user != null) {}
+                                },
+                                verificationFailed: (FirebaseAuthException exception) {
+                                  log(exception.toString());
+                                },
+                                codeSent: (String verificationId, int? forceResendingToken) async {
+                                  final value = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => OTP(
+                                                phoneNumber: _phoneController.text,
+                                                auth: _auth,
+                                                verificationId: verificationId,
+                                              )));
+                                },
+                                codeAutoRetrievalTimeout: (String re) {
+                                  log("Time out !!!! code happend");
+                                });
+                            // await loginUser(phone, context);
+                            stopLoading();
+                          }
+                        },
                       ),
                     ),
                   ),

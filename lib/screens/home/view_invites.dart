@@ -407,6 +407,7 @@ class InvitationCard extends StatelessWidget {
                                             await FirebaseFirestore.instance.collection('users_data').doc(to).get();
 
                                         UserData _toUser = UserData.fromJson(jsonDecode(jsonEncode(_dsTo.data())));
+                                        _toUser.cards!.add(snapshot.data!.cardNumber ?? "");
                                         _toUser.invites!.remove(this.hash);
 
                                         await FirebaseFirestore.instance
@@ -447,7 +448,6 @@ class InvitationCard extends StatelessWidget {
                                       await FirebaseFirestore.instance.collection('users_data').doc(to).get();
 
                                   UserData _toUser = UserData.fromJson(jsonDecode(jsonEncode(_dsTo.data())));
-                                  _toUser.cards!.add(snapshot.data!.cardNumber ?? "");
                                   _toUser.invites!.remove(this.hash);
 
                                   await FirebaseFirestore.instance

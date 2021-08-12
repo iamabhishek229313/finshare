@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
+import 'package:finshare/util/colors.dart';
 import 'package:finshare/util/progress_indc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -72,27 +74,44 @@ class _OTPState extends State<OTP> {
                 ),
                 SizedBox(height: 20.0),
                 Align(
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      final code = _codeController.text.trim();
-                      AuthCredential credential =
-                          PhoneAuthProvider.credential(verificationId: widget.verificationId, smsCode: code);
+                  child: SizedBox(
+                    child: ArgonButton(
+                      width: 400,
+                      height: 50,
+                      borderRadius: 5.0,
+                      color: AppColors.cardColor,
+                      child: Text(
+                        "Verify",
+                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
+                      ),
+                      loader: Container(
+                        padding: EdgeInsets.all(10),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onTap: (startLoading, stopLoading, btnState) async {
+                        if (btnState == ButtonState.Idle) {
+                          startLoading();
+                          final code = _codeController.text.trim();
+                          AuthCredential credential =
+                              PhoneAuthProvider.credential(verificationId: widget.verificationId, smsCode: code);
 
-                      UserCredential result = await widget.auth.signInWithCredential(credential);
+                          UserCredential result = await widget.auth.signInWithCredential(credential);
 
-                      User? user = result.user;
+                          User? user = result.user;
 
-                      if (user != null) {
-                        log("Success with : " + user.phoneNumber.toString());
+                          stopLoading();
 
-                        Navigator.pop(context);
-                      } else {
-                        print("Error");
-                      }
-                    },
-                    child: Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
+                          if (user != null) {
+                            log("Success with : " + user.phoneNumber.toString());
+
+                            Navigator.pop(context);
+                          } else {
+                            print("Error");
+                          }
+                        }
+                      },
                     ),
                   ),
                 ),

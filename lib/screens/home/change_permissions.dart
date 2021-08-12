@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/models/card_data.dart';
 import 'package:finshare/util/colors.dart';
@@ -98,35 +99,51 @@ class _ChangePermissionsState extends State<ChangePermissions> {
           ),
           iconTheme: IconThemeData(color: Colors.black),
         ),
-        bottomNavigationBar: GestureDetector(
-          onTap: () async {
-            DocumentSnapshot _ds = await FirebaseFirestore.instance.collection('cards').doc(widget.cardNumber).get();
-            CardData _cardData = CardData.fromJson(jsonDecode(jsonEncode(_ds.data())));
-
-            _cardData.members![widget.index]!.permissions = Permissions(
-                perTransactionLimit: double.parse(_perTranscLimitController.text),
-                dailyLimit: double.parse(_dailyLimitController.text),
-                monthlyLimit: double.parse(_monthlyLimitController.text),
-                timingFrom: (_fromTime?.format(context).toString()),
-                timingTo: (_toTime?.format(context).toString()),
-                categories: _chosedCategories.toList());
-
-            await FirebaseFirestore.instance.collection('cards').doc(widget.cardNumber).update(_cardData.toJson());
-
-            log("Permissions chnaged!");
-            Navigator.pop(context);
-            Navigator.pop(context);
-          },
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.075,
-            color: Colors.red.shade100,
-            child: Center(
-              child: Text(
-                "CHANGE PERMISSIONS",
-                style: TextStyle(fontWeight: FontWeight.w900, color: Colors.red.shade700, fontSize: 18.0),
+        bottomNavigationBar: Container(
+          height: MediaQuery.of(context).size.height * 0.075,
+          child: ArgonButton(
+              color: Colors.red.shade100,
+              roundLoadingShape: false,
+              height: double.maxFinite,
+              width: double.maxFinite,
+              child: Center(
+                child: Text(
+                  "CHANGE PERMISSIONS",
+                  style: TextStyle(fontWeight: FontWeight.w900, color: Colors.red.shade700, fontSize: 18.0),
+                ),
               ),
-            ),
-          ),
+              loader: Container(
+                padding: EdgeInsets.all(10),
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+              onTap: (startLoading, stopLoading, btnState) async {
+                if (btnState == ButtonState.Idle) {
+                  startLoading();
+                  DocumentSnapshot _ds =
+                      await FirebaseFirestore.instance.collection('cards').doc(widget.cardNumber).get();
+                  CardData _cardData = CardData.fromJson(jsonDecode(jsonEncode(_ds.data())));
+
+                  _cardData.members![widget.index]!.permissions = Permissions(
+                      perTransactionLimit: double.parse(_perTranscLimitController.text),
+                      dailyLimit: double.parse(_dailyLimitController.text),
+                      monthlyLimit: double.parse(_monthlyLimitController.text),
+                      timingFrom: (_fromTime?.format(context).toString()),
+                      timingTo: (_toTime?.format(context).toString()),
+                      categories: _chosedCategories.toList());
+
+                  await FirebaseFirestore.instance
+                      .collection('cards')
+                      .doc(widget.cardNumber)
+                      .update(_cardData.toJson());
+
+                  log("Permissions chnaged!");
+                  stopLoading();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }
+              }),
         ),
         body: ListView(
           padding: EdgeInsets.symmetric(horizontal: 16.0).copyWith(bottom: 32.0),

@@ -61,8 +61,9 @@ class _ManageCardsState extends State<ManageCards> {
                     ),
                     Expanded(
                       child: ListView.builder(
+                          padding: EdgeInsets.only(bottom: 48.0),
                           physics: BouncingScrollPhysics(),
-                          itemCount: (_userData.cards?.length ?? 0) + 1,
+                          itemCount: (_userData.cards?.length ?? 0),
                           itemBuilder: (context, index) {
                             return SizedBox(
                                 height: screenHeight / 3.5,

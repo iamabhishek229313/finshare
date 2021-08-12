@@ -39,6 +39,7 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   onboarding: ^2.1.0
   auto_animated: ^3.0.0
+  argon_buttons_flutter: ^1.1.0
   
 dev_dependencies:
   flutter_test:

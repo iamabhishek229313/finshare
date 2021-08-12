@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/models/card_data.dart';
@@ -64,83 +65,92 @@ class _GrantPermissionsState extends State<GrantPermissions> {
           ),
           iconTheme: IconThemeData(color: Colors.black),
         ),
-        bottomNavigationBar: GestureDetector(
-          onTap: () async {
-            widget.cardData?.members?.last!.permissions = Permissions(
-                perTransactionLimit: double.parse(_perTranscLimitController.text),
-                dailyLimit: double.parse(_dailyLimitController.text),
-                monthlyLimit: double.parse(_monthlyLimitController.text),
-                timingFrom: (_fromTime?.format(context).toString()),
-                timingTo: (_toTime?.format(context).toString()),
-                categories: _chosedCategories.toList());
-
-            // log("Atlast all details are : " + widget.cardData!.toJson().toString());
-            User? _user = FirebaseAuth.instance.currentUser;
-            String _email =
-                (await FirebaseFirestore.instance.collection('user_ids').doc(_user?.uid).get()).get("email");
-
-            Invitation _invitation = new Invitation(
-                createdAt: DateTime.now().microsecondsSinceEpoch,
-                from: _email,
-                status: "Pending",
-                cardNumber: widget.cardData?.cARDNUMBER,
-                to: widget.cardData?.members?.last!.emailId,
-                members: widget.cardData?.members?.last);
-
-            DocumentSnapshot _ds = await FirebaseFirestore.instance
-                .collection('users_data')
-                .doc(widget.cardData?.members?.last!.emailId)
-                .get();
-
-            if (_ds.exists) {
-              String? documentHash;
-              await FirebaseFirestore.instance.collection('invitations').add(_invitation.toJson()).then((value) {
-                documentHash = value.id;
-              });
-
-              await FirebaseFirestore.instance.collection('invitations').doc(documentHash).set(_invitation.toJson());
-
-              DocumentSnapshot _fromDs = await FirebaseFirestore.instance.collection('users_data').doc(_email).get();
-              UserData _fromUser = UserData.fromJson(jsonDecode(jsonEncode(_fromDs.data())));
-              _fromUser.invitesSent?.add(documentHash ?? "");
-              await FirebaseFirestore.instance.collection('users_data').doc(_email).update(_fromUser.toJson());
-
-              DocumentSnapshot _toDs = await FirebaseFirestore.instance
-                  .collection('users_data')
-                  .doc(widget.cardData?.members?.last!.emailId)
-                  .get();
-              UserData _toUser = UserData.fromJson(jsonDecode(jsonEncode(_toDs.data())));
-              _toUser.invites?.add(documentHash ?? "");
-              await FirebaseFirestore.instance
-                  .collection('users_data')
-                  .doc(widget.cardData?.members?.last!.emailId)
-                  .update(_toUser.toJson());
-
-              log("Invite sent!");
-              Navigator.pop(context);
-              Navigator.pop(context);
-            } else {
-              log("To user doesn't exists");
-              Navigator.pop(context);
-              Navigator.pop(context);
-            }
-
-            // await FirebaseFirestore.instance
-            //     .collection("cards")
-            //     .doc(widget.cardData?.cARDNUMBER)
-            //     .update(widget.cardData!.toJson());
-          },
-          child: Container(
+        bottomNavigationBar: Container(
             height: MediaQuery.of(context).size.height * 0.075,
-            color: AppColors.cardColor,
-            child: Center(
-              child: Text(
-                "INVITE",
-                style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 18.0),
+            child: ArgonButton(
+              roundLoadingShape: false,
+              height: double.maxFinite,
+              width: double.maxFinite,
+              color: AppColors.cardColor,
+              child: Center(
+                child: Text(
+                  "INVITE",
+                  style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 18.0),
+                ),
               ),
-            ),
-          ),
-        ),
+              loader: Container(
+                padding: EdgeInsets.all(10),
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+              onTap: (startLoading, stopLoading, btnState) async {
+                if (btnState == ButtonState.Idle) {
+                  startLoading();
+                  widget.cardData?.members?.last!.permissions = Permissions(
+                      perTransactionLimit: double.parse(_perTranscLimitController.text),
+                      dailyLimit: double.parse(_dailyLimitController.text),
+                      monthlyLimit: double.parse(_monthlyLimitController.text),
+                      timingFrom: (_fromTime?.format(context).toString()),
+                      timingTo: (_toTime?.format(context).toString()),
+                      categories: _chosedCategories.toList());
+
+                  // log("Atlast all details are : " + widget.cardData!.toJson().toString());
+                  User? _user = FirebaseAuth.instance.currentUser;
+                  String _email =
+                      (await FirebaseFirestore.instance.collection('user_ids').doc(_user?.uid).get()).get("email");
+
+                  Invitation _invitation = new Invitation(
+                      createdAt: DateTime.now().microsecondsSinceEpoch,
+                      from: _email,
+                      status: "Pending",
+                      cardNumber: widget.cardData?.cARDNUMBER,
+                      to: widget.cardData?.members?.last!.emailId,
+                      members: widget.cardData?.members?.last);
+
+                  DocumentSnapshot _ds = await FirebaseFirestore.instance
+                      .collection('users_data')
+                      .doc(widget.cardData?.members?.last!.emailId)
+                      .get();
+
+                  if (_ds.exists) {
+                    String? documentHash;
+                    await FirebaseFirestore.instance.collection('invitations').add(_invitation.toJson()).then((value) {
+                      documentHash = value.id;
+                    });
+
+                    await FirebaseFirestore.instance
+                        .collection('invitations')
+                        .doc(documentHash)
+                        .set(_invitation.toJson());
+
+                    DocumentSnapshot _fromDs =
+                        await FirebaseFirestore.instance.collection('users_data').doc(_email).get();
+                    UserData _fromUser = UserData.fromJson(jsonDecode(jsonEncode(_fromDs.data())));
+                    _fromUser.invitesSent?.add(documentHash ?? "");
+                    await FirebaseFirestore.instance.collection('users_data').doc(_email).update(_fromUser.toJson());
+
+                    DocumentSnapshot _toDs = await FirebaseFirestore.instance
+                        .collection('users_data')
+                        .doc(widget.cardData?.members?.last!.emailId)
+                        .get();
+                    UserData _toUser = UserData.fromJson(jsonDecode(jsonEncode(_toDs.data())));
+                    _toUser.invites?.add(documentHash ?? "");
+                    await FirebaseFirestore.instance
+                        .collection('users_data')
+                        .doc(widget.cardData?.members?.last!.emailId)
+                        .update(_toUser.toJson());
+
+                    log("Invite sent!");
+                  } else {
+                    log("To user doesn't exists");
+                  }
+                  stopLoading();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }
+              },
+            )),
         body: ListView(
           padding: EdgeInsets.symmetric(horizontal: 16.0).copyWith(bottom: 32.0),
           children: [
