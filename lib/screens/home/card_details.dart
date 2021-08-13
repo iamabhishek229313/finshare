@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/core/customized_chart.dart';
 import 'package:finshare/models/card_data.dart';
@@ -122,6 +123,9 @@ class _CardDetailsState extends State<CardDetails> {
                                   if (index != 0)
                                     Navigator.of(context).push(MaterialPageRoute(
                                         builder: (_) => UserDetails(
+                                              // data: _userBarData,
+                                              // data: List.generate(data.length, (date) => data[date][index - 1]),
+                                              userColor: _userColors[index % _userColors.length],
                                               index: index - 1,
                                               cardNumber: _cardData.cARDNUMBER,
                                               memData: _cardData.members![index - 1],

@@ -171,7 +171,7 @@ class BarChart extends StatelessWidget {
               for (double d in data[index]) dataSum = dataSum + d;
 
               return _getBarItem(reverse ? (index - data.length + 1) * -1 : index, wasEmpty, displayValue, showLabels,
-                  maxValue, dataSum);
+                  maxValue, dataSum, users);
             },
             separatorBuilder: (BuildContext context, int index) {
               return SizedBox(
@@ -184,8 +184,10 @@ class BarChart extends StatelessWidget {
     );
   }
 
-  Widget _getBarItem(int index, bool hideValue, bool displayValue, bool showLabels, double maxValue, double dataSum) {
+  Widget _getBarItem(
+      int index, bool hideValue, bool displayValue, bool showLabels, double maxValue, double dataSum, int nousers) {
     return _BarItem(
+        userNo: nousers,
         width: barWidth,
         value: data[index],
         valueStyle: valueStyle,
@@ -245,9 +247,11 @@ class _BarItem extends ImplicitlyAnimatedWidget {
   final double headerValueHeight;
   final bool roundValuesOnText;
   final double dataSum;
+  final int userNo;
 
   const _BarItem({
     Key? key,
+    required this.userNo,
     required this.heightFactor,
     required this.width,
     required this.value,
@@ -294,6 +298,9 @@ class _BarItemState extends AnimatedWidgetBaseState<_BarItem> {
       _gradientStops.add((prev_prec + ((widget.value[i] / widget.dataSum) * 100.0)) / 100);
       prev_prec += ((widget.value[i] / widget.dataSum) * 100.0);
     }
+    // log("data" + widget.value.toString());
+    // log("Gradient stops : " + _gradientStops.toString());
+    // log("user colors : " + widget.getColor.length.toString());
 
     double? hf = _transform?.evaluate(animation);
 
