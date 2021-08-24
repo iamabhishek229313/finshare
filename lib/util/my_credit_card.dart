@@ -6,14 +6,14 @@ import 'package:finshare/util/colors.dart';
 import 'package:flutter/material.dart';
 
 class MyCreditCard extends StatefulWidget {
-  const MyCreditCard({
-    Key? key,
-    required this.card_number,
-    required this.color,
-  }) : super(key: key);
+  const MyCreditCard(
+      {Key? key, required this.card_number, required this.shadow, required this.startColor, required this.endColor})
+      : super(key: key);
 
   final String? card_number;
-  final Color color;
+  final Color shadow;
+  final Color startColor;
+  final Color endColor;
 
   @override
   _MyCreditCardState createState() => _MyCreditCardState();
@@ -32,17 +32,25 @@ class _MyCreditCardState extends State<MyCreditCard> {
     return Container(
       height: screenHeight * 0.285,
       margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: widget.color, boxShadow: [
-        BoxShadow(
-          color: widget.color,
-          blurRadius: 12.0,
-          spreadRadius: 0.2,
-          offset: Offset(
-            3.0, // horizontal, move right 10
-            3.0, // vertical, move down 10
-          ),
-        )
-      ]),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.amber,
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [widget.startColor, widget.endColor],
+              stops: [0.0, 1.0]),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black54,
+              blurRadius: 12.0,
+              spreadRadius: 0.2,
+              offset: Offset(
+                3.0, // horizontal, move right 10
+                3.0, // vertical, move down 10
+              ),
+            )
+          ]),
       child: FutureBuilder(
         future: _getCard(),
         builder: (BuildContext context, AsyncSnapshot<CardData> snapshot) {
@@ -63,49 +71,40 @@ class _MyCreditCardState extends State<MyCreditCard> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     // Text(
-                      //     //   snapshot.data?.bANKNAME ?? "",
-                      //     //   style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 12.0),
-                      //     // ),
-                      //     Icon(
-                      //       Icons.settings_input_component,
-                      //       color: Colors.white,
-                      //     )
-                      //   ],
-                      // ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            snapshot.data?.cARDNUMBER ?? "",
-                            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 24.0),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: "\$307.96",
+                                  style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 28.0),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: "/\$" + (snapshot.data?.aVAILBALANCE.toString() ?? ""),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400, color: Colors.white, fontSize: 12.0)),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                "Balance \$USD",
+                                style: TextStyle(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 10.0),
+                              ),
+                            ],
                           ),
-                          Icon(
-                            Icons.settings_input_component,
-                            color: Colors.white,
-                          )
+                          Text(
+                            "VISA",
+                            style: TextStyle(
+                                decorationStyle: TextDecorationStyle.wavy,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                                fontSize: 22.0),
+                          ),
                         ],
                       ),
-                      Text(
-                        "Account Number",
-                        style: TextStyle(color: Colors.white, fontSize: 8.0),
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        snapshot.data?.cARDHOLDERNAME ?? "",
-                        style: TextStyle(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 18.0),
-                      ),
-                      Text(
-                        "Account Holder",
-                        style: TextStyle(color: Colors.white, fontSize: 8.0),
-                      )
                     ],
                   ),
                   Row(
@@ -115,32 +114,37 @@ class _MyCreditCardState extends State<MyCreditCard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            RichText(
-                              text: TextSpan(
-                                text: "\$307.96",
-                                style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 28.0),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: "/\$" + (snapshot.data?.aVAILBALANCE.toString() ?? ""),
-                                      style:
-                                          TextStyle(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 12.0)),
-                                ],
-                              ),
+                            Text(
+                              snapshot.data?.cARDHOLDERNAME ?? "",
+                              style: TextStyle(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 14.0),
                             ),
                             Text(
-                              "Balance \$USD",
-                              style: TextStyle(fontWeight: FontWeight.w400, color: Colors.white, fontSize: 10.0),
+                              snapshot.data?.cARDNUMBER ?? "",
+                              style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 20.0),
                             ),
                           ],
                         ),
                       ),
-                      Text(
-                        "VISA",
-                        style: TextStyle(
-                            decorationStyle: TextDecorationStyle.wavy,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                            fontSize: 22.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "12/26",
+                            style: TextStyle(
+                                decorationStyle: TextDecorationStyle.wavy,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                fontSize: 16.0),
+                          ),
+                          Text(
+                            "EXPIRY",
+                            style: TextStyle(
+                                decorationStyle: TextDecorationStyle.wavy,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                                fontSize: 8.0),
+                          ),
+                        ],
                       ),
                     ],
                   ),

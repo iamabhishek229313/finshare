@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/core/customized_chart.dart';
 import 'package:finshare/models/card_data.dart';
@@ -16,10 +15,10 @@ import 'dart:math' as math;
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CardDetails extends StatefulWidget {
-  const CardDetails({Key? key, required this.card_number, required this.color}) : super(key: key);
+  const CardDetails({Key? key, required this.card_number, this.color, required this.gradient}) : super(key: key);
   final String? card_number;
-  final Color color;
-
+  final Color? color;
+  final List<Color> gradient;
   @override
   _CardDetailsState createState() => _CardDetailsState();
 }
@@ -105,7 +104,11 @@ class _CardDetailsState extends State<CardDetails> {
                     tag: _cardData.cARDNUMBER ?? "",
                     child: Material(
                         type: MaterialType.transparency, // likely needed
-                        child: MyCreditCard(color: widget.color.withAlpha(400), card_number: _cardData.cARDNUMBER))),
+                        child: MyCreditCard(
+                            startColor: widget.gradient[0],
+                            endColor: widget.gradient[1],
+                            shadow: widget.gradient[0],
+                            card_number: _cardData.cARDNUMBER))),
                 SizedBox(
                   height: screenHeight * 0.02,
                 ),

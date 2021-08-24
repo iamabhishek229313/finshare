@@ -34,13 +34,30 @@ class _HomeState extends State<Home> {
   String? _email;
   UserData? _userData;
 
-  List<Color> _colors = [
-    Color.fromRGBO(22, 48, 85, 1),
-    Color.fromRGBO(1, 1, 1, 1),
-    Color.fromRGBO(225, 79, 92, 1),
-    Color.fromRGBO(51, 151, 224, 1),
-    Color.fromRGBO(18, 126, 121, 1),
-    Color.fromRGBO(96, 43, 219, 1),
+  // List<Color> _colors = [
+  //   Color.fromRGBO(22, 48, 85, 1),
+  //   Color.fromRGBO(1, 1, 1, 1),
+  //   Color.fromRGBO(225, 79, 92, 1),
+  //   Color.fromRGBO(51, 151, 224, 1),
+  //   Color.fromRGBO(18, 126, 121, 1),
+  //   Color.fromRGBO(96, 43, 219, 1),
+  // ];
+
+  // List<Gradient> _gradient = [
+  //   FlutterGradients.warmFlame(),
+  //   FlutterGradients.greatWhale(),
+  //   FlutterGradients.loveKiss(),
+  //   FlutterGradients.nightFade(),
+  //   FlutterGradients.sunnyMorning()
+  // ];
+
+  List<List<Color>> _gradients = [
+    [Color.fromRGBO(134, 143, 150, 1), Color.fromRGBO(89, 97, 100, 1)],
+    [Color.fromRGBO(9, 32, 63, 1), Color.fromRGBO(83, 120, 149, 1)],
+    [Color.fromRGBO(199, 29, 111, 1), Color.fromRGBO(208, 150, 147, 1)],
+    [Color.fromRGBO(247, 112, 98, 1), Color.fromRGBO(254, 81, 150, 1)],
+    [Color.fromRGBO(43, 88, 118, 1), Color.fromRGBO(78, 67, 118, 1)],
+    [Color.fromRGBO(135, 77, 162, 1), Color.fromRGBO(196, 58, 48, 1)]
   ];
 
   @override
@@ -210,7 +227,8 @@ class _HomeState extends State<Home> {
                                     onTap: () {
                                       Navigator.of(context).push(MaterialPageRoute(
                                           builder: (_) => CardDetails(
-                                                color: _colors[index % _colors.length],
+                                                gradient: _gradients[index % _gradients.length],
+                                                // color: _colors[index % _colors.length],
                                                 card_number: _userData.cards![index],
                                               )));
                                     },
@@ -220,7 +238,9 @@ class _HomeState extends State<Home> {
                                       child: Material(
                                         type: MaterialType.transparency, // likely needed
                                         child: MyCreditCard(
-                                          color: _colors[index % _colors.length].withAlpha(400),
+                                          startColor: _gradients[index % _gradients.length][0],
+                                          endColor: _gradients[index % _gradients.length][1],
+                                          shadow: _gradients[index % _gradients.length][0],
                                           card_number: _userData.cards![index],
                                         ),
                                       ),
