@@ -33,6 +33,16 @@ class _ManageCardsState extends State<ManageCards> {
     [Color.fromRGBO(135, 77, 162, 1), Color.fromRGBO(196, 58, 48, 1)]
   ];
 
+  List<String> _bgImages = [
+    'assets/images/bg1.jpg',
+    'assets/images/bg2.jpg',
+    'assets/images/bg3.jpg',
+    'assets/images/bg4.jpg',
+    'assets/images/bg5.jpg',
+    'assets/images/bg6.jpg',
+    'assets/images/bg7.jpg',
+    'assets/images/bg8.jpg',
+  ];
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -141,6 +151,7 @@ class _ManageCardsState extends State<ManageCards> {
                                       );
                                     },
                                     child: MyCreditCard(
+                                      bgImage: _bgImages[index % _bgImages.length],
                                       startColor: _gradients[index % _gradients.length][0],
                                       endColor: _gradients[index % _gradients.length][1],
                                       shadow: _gradients[index % _gradients.length][0],

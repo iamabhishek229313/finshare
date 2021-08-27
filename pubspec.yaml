@@ -23,7 +23,6 @@ dependencies:
   get_it: null
   google_fonts: null
   google_sign_in: ^5.0.5
-  http: null
   share: null
   shared_preferences: null
   transparent_image: null
@@ -40,6 +39,7 @@ dependencies:
   onboarding: ^2.1.0
   auto_animated: ^3.0.0
   argon_buttons_flutter: ^1.1.0
+  http: ^0.13.3
   
 dev_dependencies:
   flutter_test:

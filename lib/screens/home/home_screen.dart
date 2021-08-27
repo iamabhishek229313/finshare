@@ -6,6 +6,7 @@ import 'package:auto_animated/auto_animated.dart';
 // import 'package:chart_components/chart_components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finshare/models/user_data.dart';
+import 'package:finshare/screens/home/about_us.dart';
 import 'package:finshare/screens/home/add_credit_card.dart';
 import 'package:finshare/screens/home/all_transactions.dart';
 import 'package:finshare/screens/home/card_details.dart';
@@ -21,6 +22,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -58,6 +61,17 @@ class _HomeState extends State<Home> {
     [Color.fromRGBO(247, 112, 98, 1), Color.fromRGBO(254, 81, 150, 1)],
     [Color.fromRGBO(43, 88, 118, 1), Color.fromRGBO(78, 67, 118, 1)],
     [Color.fromRGBO(135, 77, 162, 1), Color.fromRGBO(196, 58, 48, 1)]
+  ];
+
+  List<String> _bgImages = [
+    'assets/images/bg1.jpg',
+    'assets/images/bg2.jpg',
+    'assets/images/bg3.jpg',
+    'assets/images/bg4.jpg',
+    'assets/images/bg5.jpg',
+    'assets/images/bg6.jpg',
+    'assets/images/bg7.jpg',
+    'assets/images/bg8.jpg',
   ];
 
   @override
@@ -147,6 +161,15 @@ class _HomeState extends State<Home> {
                 },
               ),
               DrawerButton(
+                icon: Icons.group_outlined,
+                subTitle: "Know more about us",
+                title: "About us",
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => AboutUs()));
+                },
+              ),
+              DrawerButton(
                 icon: Icons.logout_outlined,
                 subTitle: "Logout from this device",
                 title: "Logout",
@@ -212,67 +235,144 @@ class _HomeState extends State<Home> {
                         )));
                   UserData _userData = UserData.fromJson(jsonDecode(jsonEncode(snapshot.data?.data())));
 
-                  return LiveList(
-                    showItemInterval: Duration(milliseconds: 75),
-                    showItemDuration: Duration(milliseconds: 175),
-                    reAnimateOnVisibility: false,
-                    scrollDirection: Axis.vertical,
-                    itemCount: (_userData.cards?.length ?? 0) + 1,
-                    itemBuilder: animationItemBuilder(
-                      (index) {
-                        return SizedBox(
-                            height: screenHeight / 3.5,
-                            child: (index < (_userData.cards?.length ?? 0))
-                                ? GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(MaterialPageRoute(
-                                          builder: (_) => CardDetails(
-                                                gradient: _gradients[index % _gradients.length],
-                                                // color: _colors[index % _colors.length],
-                                                card_number: _userData.cards![index],
-                                              )));
-                                    },
-                                    child: Hero(
-                                      transitionOnUserGestures: true,
-                                      tag: _userData.cards![index],
-                                      child: Material(
-                                        type: MaterialType.transparency, // likely needed
-                                        child: MyCreditCard(
-                                          startColor: _gradients[index % _gradients.length][0],
-                                          endColor: _gradients[index % _gradients.length][1],
-                                          shadow: _gradients[index % _gradients.length][0],
-                                          card_number: _userData.cards![index],
-                                        ),
-                                      ),
-                                    ))
-                                : GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddCreditCard()));
-                                    },
-                                    child: Container(
-                                        margin: const EdgeInsets.all(16.0),
-                                        decoration: BoxDecoration(
-                                            color: Colors.blue.withAlpha(300), borderRadius: BorderRadius.circular(7)),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.add,
-                                              size: 54.0,
-                                              color: Colors.black87,
-                                            ),
-                                            Text("Add more",
-                                                style: TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 18.0,
-                                                  fontWeight: FontWeight.w900,
-                                                ))
-                                          ],
-                                        )),
-                                  ));
+                  return RefreshIndicator(
+                      onRefresh: () async {
+                        var headers = {
+                          'X-Zeta-AuthToken':
+                              'eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwidGFnIjoiWHhGMWpBRzgxVTNDWkNVX2Y4R1I5USIsImFsZyI6IkExMjhHQ01LVyIsIml2IjoiaXgzSTNfNEtuU05DOFlEbCJ9.6FfhdIpQgKTUHdJftomE32F8gEc1EwVHMWBGXsXLn_s.1fdYHGueF_u2dbFUf8i2Fw.hgNRd3OuUxke2YC95n1XP3oZ2rkTEMrxMXEZ5rznAzXM1FX8X4OVP-Zdc-9nrnoetkmp9RtuQ0ulwJywntoQHxvJHpnPtVXn8Ji_FuPE2NVLmTdNoZNquID-fERsd-c_bFj4erFridHMMiZjkbOpUUP-tf5_m4o40YKvJBFSf6PHBgEOASvfHo_FvzgtCepYS7tR3RKn2tx4G0FpdXfRp5NM9qW21L7v5byA-mkKf0q8Cw7iHAUa1gTn2DN1HANa6KZTpSMjAFeJVrPO8pPEcduwGa6n6yYZObd_L2bqoKO9kFaqFuSbBqlly4yCpf9FUs0Se-Ad-rQ35dPMilj1yVT8bdU2aRVA9GjtZ7hWmBwQ-0RB9OtB91IiV4IR4DBM.x-BYWf9BTuJtFVDZLAL96g',
+                          'Cookie':
+                              'AWSALB=BPbUoxiZynYgcaZBC8vJGwrvX9edh0ha7QQha2RcO2t2D0XPA7fB08YOJGZ++CoyoUL3VvioYhTAl0yGZ/wd8QrI1c4/DPbRltW1sI5Wq+eMrhKERBTvKxlB3gdf; AWSALBCORS=BPbUoxiZynYgcaZBC8vJGwrvX9edh0ha7QQha2RcO2t2D0XPA7fB08YOJGZ++CoyoUL3VvioYhTAl0yGZ/wd8QrI1c4/DPbRltW1sI5Wq+eMrhKERBTvKxlB3gdf'
+                        };
+                        var url = Uri.parse(
+                            'https://fusion.preprod.zeta.in/api/v1/ifi/140793/bundles/f7ee3492-f4f7-4652-9bf2-76357d1f22a2');
+                        await http.get(url, headers: headers).then((response) {
+                          log(response.body.toString());
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Data Synced")));
+                        });
                       },
-                    ),
-                  );
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: (_userData.cards?.length ?? 0) + 1,
+                        itemBuilder: (context, index) {
+                          return SizedBox(
+                              height: screenHeight / 3.5,
+                              child: (index < (_userData.cards?.length ?? 0))
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (_) => CardDetails(
+                                                  bgImage: _bgImages[index % _bgImages.length],
+                                                  gradient: _gradients[index % _gradients.length],
+                                                  // color: _colors[index % _colors.length],
+                                                  card_number: _userData.cards![index],
+                                                )));
+                                      },
+                                      child: Hero(
+                                        transitionOnUserGestures: true,
+                                        tag: _userData.cards![index],
+                                        child: Material(
+                                          type: MaterialType.transparency, // likely needed
+                                          child: MyCreditCard(
+                                            bgImage: _bgImages[index % _bgImages.length],
+                                            startColor: _gradients[index % _gradients.length][0],
+                                            endColor: _gradients[index % _gradients.length][1],
+                                            shadow: _gradients[index % _gradients.length][0],
+                                            card_number: _userData.cards![index],
+                                          ),
+                                        ),
+                                      ))
+                                  : GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddCreditCard()));
+                                      },
+                                      child: Container(
+                                          margin: const EdgeInsets.all(16.0),
+                                          decoration: BoxDecoration(
+                                              color: Colors.blue.withAlpha(300),
+                                              borderRadius: BorderRadius.circular(7)),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.add,
+                                                size: 54.0,
+                                                color: Colors.black87,
+                                              ),
+                                              Text("Add more",
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 18.0,
+                                                    fontWeight: FontWeight.w900,
+                                                  ))
+                                            ],
+                                          )),
+                                    ));
+                        },
+                      )
+                      // child: LiveList(
+                      //   showItemInterval: Duration(milliseconds: 75),
+                      //   showItemDuration: Duration(milliseconds: 175),
+                      //   reAnimateOnVisibility: false,
+                      //   scrollDirection: Axis.vertical,
+                      //   itemCount: (_userData.cards?.length ?? 0) + 1,
+                      //   itemBuilder: animationItemBuilder(
+                      //     (index) {
+                      // return SizedBox(
+                      //     height: screenHeight / 3.5,
+                      //     child: (index < (_userData.cards?.length ?? 0))
+                      //         ? GestureDetector(
+                      //             onTap: () {
+                      //               Navigator.of(context).push(MaterialPageRoute(
+                      //                   builder: (_) => CardDetails(
+                      //                         gradient: _gradients[index % _gradients.length],
+                      //                         // color: _colors[index % _colors.length],
+                      //                         card_number: _userData.cards![index],
+                      //                       )));
+                      //             },
+                      //             child: Hero(
+                      //               transitionOnUserGestures: true,
+                      //               tag: _userData.cards![index],
+                      //               child: Material(
+                      //                 type: MaterialType.transparency, // likely needed
+                      //                 child: MyCreditCard(
+                      //                   startColor: _gradients[index % _gradients.length][0],
+                      //                   endColor: _gradients[index % _gradients.length][1],
+                      //                   shadow: _gradients[index % _gradients.length][0],
+                      //                   card_number: _userData.cards![index],
+                      //                 ),
+                      //               ),
+                      //             ))
+                      //         : GestureDetector(
+                      //             onTap: () {
+                      //               Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddCreditCard()));
+                      //             },
+                      //             child: Container(
+                      //                 margin: const EdgeInsets.all(16.0),
+                      //                 decoration: BoxDecoration(
+                      //                     color: Colors.blue.withAlpha(300),
+                      //                     borderRadius: BorderRadius.circular(7)),
+                      //                 child: Column(
+                      //                   mainAxisAlignment: MainAxisAlignment.center,
+                      //                   children: [
+                      //                     Icon(
+                      //                       Icons.add,
+                      //                       size: 54.0,
+                      //                       color: Colors.black87,
+                      //                     ),
+                      //                     Text("Add more",
+                      //                         style: TextStyle(
+                      //                           color: Colors.black87,
+                      //                           fontSize: 18.0,
+                      //                           fontWeight: FontWeight.w900,
+                      //                         ))
+                      //                   ],
+                      //                 )),
+                      //           ));
+                      //     },
+                      //   ),
+                      // ),
+                      );
                 });
           },
         ));
