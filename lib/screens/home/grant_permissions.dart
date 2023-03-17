@@ -261,7 +261,8 @@ class _GrantPermissionsState extends State<GrantPermissions> {
                           ),
                           Expanded(
                             flex: 8,
-                            child: OutlineButton(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(),
                               onPressed: () async {
                                 TimeOfDay? selectedTime = await showTimePicker(
                                   initialTime: TimeOfDay.now(),
@@ -296,7 +297,8 @@ class _GrantPermissionsState extends State<GrantPermissions> {
                           ),
                           Expanded(
                             flex: 8,
-                            child: OutlineButton(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(),
                               onPressed: () async {
                                 TimeOfDay? selectedTime = await showTimePicker(
                                   initialTime: TimeOfDay.now(),

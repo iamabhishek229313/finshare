@@ -258,113 +258,118 @@ class _AddNewUserState extends State<AddNewUser> {
               height: 32.0,
             ),
             SizedBox(
-              child: OutlineButton(
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Text(
-                    chosedPerson == -1
-                        ? "Choose"
-                        : (chosedPerson == 0 ? "Partner" : (chosedPerson == 1 ? "Children" : "Others")),
-                    style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w700),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(7.0), side: BorderSide(color: Colors.black, width: 1.5)),
+                  side: BorderSide(
+                    width: 2,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                  onPressed: () async {
-                    final _selectedCandidate = await showModalBottomSheet(
-                      context: context,
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
-                      elevation: 10.0,
-                      builder: (BuildContext context) {
-                        return Container(
-                          decoration:
-                              BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(20.0)),
-                          child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0).copyWith(top: 16.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Choose",
-                                    style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
-                                  ),
-                                  SizedBox(
-                                    height: 16.0,
-                                  ),
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: List.generate(
-                                      3,
-                                      (index) => SizedBox(
-                                        height: (screenHeight * 0.3) / 4,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context).pop(index);
-                                          },
-                                          child: Card(
-                                            elevation: .5,
-                                            borderOnForeground: true,
-                                            shadowColor: AppColors.shadow,
-                                            margin: EdgeInsets.only(top: 2.5),
-                                            color: Colors.white,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    flex: 2,
-                                                    child: CircleAvatar(
-                                                      child: Text(
-                                                        "A",
-                                                        style: TextStyle(color: Colors.white),
-                                                      ),
-                                                      backgroundColor: Colors.black,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 8,
+                ),
+                child: Text(
+                  chosedPerson == -1
+                      ? "Choose"
+                      : (chosedPerson == 0 ? "Partner" : (chosedPerson == 1 ? "Children" : "Others")),
+                  style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w700),
+                ),
+                onPressed: () async {
+                  final _selectedCandidate = await showModalBottomSheet(
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+                    elevation: 10.0,
+                    builder: (BuildContext context) {
+                      return Container(
+                        decoration:
+                            BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(20.0)),
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0).copyWith(top: 16.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Choose",
+                                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w900),
+                                ),
+                                SizedBox(
+                                  height: 16.0,
+                                ),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: List.generate(
+                                    3,
+                                    (index) => SizedBox(
+                                      height: (screenHeight * 0.3) / 4,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).pop(index);
+                                        },
+                                        child: Card(
+                                          elevation: .5,
+                                          borderOnForeground: true,
+                                          shadowColor: AppColors.shadow,
+                                          margin: EdgeInsets.only(top: 2.5),
+                                          color: Colors.white,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: CircleAvatar(
                                                     child: Text(
-                                                      (index == 0) ? "Partner" : (index == 1 ? "Children" : "Others"),
-                                                      style: TextStyle(
-                                                          fontSize: 18.0,
-                                                          fontWeight: FontWeight.w600,
-                                                          color: Colors.black),
+                                                      "A",
+                                                      style: TextStyle(color: Colors.white),
                                                     ),
+                                                    backgroundColor: Colors.black,
                                                   ),
-                                                  Expanded(
-                                                    child: Center(
-                                                        child: Icon(
-                                                      (chosedPerson != index)
-                                                          ? Icons.arrow_forward
-                                                          : Icons.check_circle,
-                                                      color:
-                                                          (chosedPerson != index) ? Colors.grey : Colors.green.shade800,
-                                                    )),
-                                                  )
-                                                ],
-                                              ),
+                                                ),
+                                                Expanded(
+                                                  flex: 8,
+                                                  child: Text(
+                                                    (index == 0) ? "Partner" : (index == 1 ? "Children" : "Others"),
+                                                    style: TextStyle(
+                                                        fontSize: 18.0,
+                                                        fontWeight: FontWeight.w600,
+                                                        color: Colors.black),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Center(
+                                                      child: Icon(
+                                                    (chosedPerson != index) ? Icons.arrow_forward : Icons.check_circle,
+                                                    color:
+                                                        (chosedPerson != index) ? Colors.grey : Colors.green.shade800,
+                                                  )),
+                                                )
+                                              ],
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 32.0,
-                                  )
-                                ],
-                              )),
-                        );
-                      },
-                    );
+                                ),
+                                SizedBox(
+                                  height: 32.0,
+                                )
+                              ],
+                            )),
+                      );
+                    },
+                  );
 
-                    if (_selectedCandidate != null) {
-                      setState(() {
-                        chosedPerson = _selectedCandidate;
-                      });
-                    }
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(7.0), side: BorderSide(color: Colors.black, width: 1.5))),
+                  if (_selectedCandidate != null) {
+                    setState(() {
+                      chosedPerson = _selectedCandidate;
+                    });
+                  }
+                },
+              ),
             ),
           ],
         )

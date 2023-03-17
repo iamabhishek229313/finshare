@@ -374,8 +374,13 @@ class InvitationCard extends StatelessWidget {
                         ? Row(
                             children: [
                               Expanded(
-                                  child: FlatButton(
-                                      color: Colors.indigo,
+                                  child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.indigo,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.all(16.0),
+                                        textStyle: const TextStyle(fontSize: 20),
+                                      ),
                                       onPressed: () async {
                                         String? from = snapshot.data!.from;
                                         String? to = snapshot.data!.to;
@@ -428,7 +433,8 @@ class InvitationCard extends StatelessWidget {
                                 width: 8.0,
                               ),
                               Expanded(
-                                  child: OutlineButton(
+                                  child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(),
                                 onPressed: () async {
                                   String? from = snapshot.data!.from;
                                   String? to = snapshot.data!.to;
@@ -463,7 +469,8 @@ class InvitationCard extends StatelessWidget {
                           )
                         : SizedBox(
                             width: double.maxFinite,
-                            child: OutlineButton(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(),
                               onPressed: () async {
                                 String? from = snapshot.data!.from;
                                 String? to = snapshot.data!.to;
