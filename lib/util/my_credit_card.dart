@@ -144,7 +144,7 @@ class _MyCreditCardState extends State<MyCreditCard> {
                                     text:
                                         _cardNumberSeg[0] + _cardNumberSeg[1] + _cardNumberSeg[2] + _cardNumberSeg[3]))
                                 .then((_) {
-                              Scaffold.of(context)
+                              ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(content: Text("Card number is copied to clipboard")));
                             });
                           },
